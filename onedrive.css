@@ -1,0 +1,753 @@
+/**
+ * ============================================================================
+ * STYL MODULU WINDOWS 11 PLOCHA + MICROSOFT ONEDRIVE (onedrive.css)
+ * Podporuje: Plochu Windows 11, Chrome rám, Teams rám, Outlook rám a OneDrive UI
+ * ============================================================================
+ */
+
+.od-win11-desktop {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    user-select: none;
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Dekorativní prvky tapety Windows 11 Bloom */
+.od-win11-bloom {
+    position: absolute;
+    width: 520px;
+    height: 520px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 120, 212, 0.38) 0%, rgba(98, 100, 167, 0.15) 55%, transparent 75%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -54%);
+    pointer-events: none;
+}
+
+/* Ikony na ploše Windows 11 */
+.od-desktop-icons {
+    position: relative;
+    z-index: 2;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: fit-content;
+}
+
+.od-desk-icon {
+    width: 96px;
+    padding: 10px 6px;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    color: #ffffff;
+    text-align: center;
+    font-size: 12px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+    border: 1px solid transparent;
+    transition: all 0.15s ease;
+}
+
+.od-desk-icon:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.od-desk-icon-badge {
+    width: 46px;
+    height: 46px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+}
+
+/* Středový rozcestník na ploše pro rychlou volbu */
+.od-launcher-card {
+    position: relative;
+    z-index: 2;
+    margin: auto;
+    background: rgba(25, 33, 44, 0.78);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 14px;
+    padding: 24px 30px;
+    color: #fff;
+    max-width: 640px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+}
+
+.od-launcher-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.od-launcher-tile {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    padding: 16px 12px;
+    cursor: pointer;
+    transition: transform 0.15s, background 0.15s, border-color 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.od-launcher-tile:hover {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: #60cdff;
+    transform: translateY(-2px);
+}
+
+/* Hlavní panel Windows 11 (Taskbar) */
+.od-win11-taskbar {
+    position: relative;
+    z-index: 100;
+    height: 46px;
+    background: rgba(24, 28, 36, 0.88);
+    backdrop-filter: blur(18px);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    color: #fff;
+}
+
+.od-taskbar-center {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 auto;
+}
+
+.od-tb-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.15s;
+}
+
+.od-tb-icon:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.od-tb-icon.active {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.od-tb-icon.active::after {
+    content: "";
+    position: absolute;
+    bottom: 2px;
+    width: 14px;
+    height: 3px;
+    border-radius: 2px;
+    background: #60cdff;
+}
+
+.od-taskbar-tray {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 11.5px;
+    color: #e2e8f0;
+}
+
+/* Otevřené okno aplikace na ploše Windows 11 */
+.od-app-window {
+    position: relative;
+    z-index: 10;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    color: #242424;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* HORNÍ RÁM PROHLÍŽEČE GOOGLE CHROME (Screen 04) */
+.od-chrome-tabs {
+    height: 36px;
+    background: #dee1e6;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 10px;
+    gap: 6px;
+    font-size: 12px;
+}
+
+.od-chrome-tab {
+    background: #ffffff;
+    padding: 6px 14px;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 190px;
+    font-weight: 500;
+    color: #202124;
+}
+
+.od-chrome-navbar {
+    height: 38px;
+    background: #ffffff;
+    border-bottom: 1px solid #dadce0;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 10px;
+}
+
+.od-chrome-url {
+    flex: 1;
+    background: #f1f3f4;
+    border-radius: 16px;
+    padding: 5px 14px;
+    font-size: 12px;
+    color: #202124;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.od-chrome-bookmarks {
+    height: 28px;
+    background: #ffffff;
+    border-bottom: 1px solid #e8eaed;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 14px;
+    font-size: 11.5px;
+    color: #3c4043;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+/* ČERNÁ HORNÍ LIŠTA ONEDRIVE WEBU (Screen 02, 04) */
+.od-web-header {
+    height: 46px;
+    background: #000000;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+}
+
+.od-search-pill {
+    width: 430px;
+    height: 32px;
+    background: #ffffff;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 8px;
+    color: #323130;
+}
+
+.od-search-pill input {
+    border: none;
+    outline: none;
+    flex: 1;
+    font-size: 13px;
+    background: transparent;
+}
+
+.od-search-scope {
+    font-size: 11.5px;
+    color: #605e5c;
+    border-left: 1px solid #e1dfdd;
+    padding-left: 8px;
+    cursor: pointer;
+}
+
+/* HORNÍ LIŠTA PRO OUTLOOK HOST (Screen 01) */
+.od-outlook-header {
+    height: 44px;
+    background: #0078d4;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+}
+
+.od-outlook-subbar {
+    height: 34px;
+    background: #ffffff;
+    border-bottom: 1px solid #edebe9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    font-size: 12px;
+}
+
+/* HORNÍ LIŠTA PRO TEAMS HOST (Screen 03) */
+.od-teams-header {
+    height: 44px;
+    background: #464eb8;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+}
+
+/* HLAVNÍ ROZVRŽENÍ ONEDRIVE OBSAHU */
+.od-main-layout {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    background: #ffffff;
+}
+
+/* Svislá lišta aplikací pro Teams nebo Outlook */
+.od-host-rail {
+    width: 48px;
+    background: #f3f2f1;
+    border-right: 1px solid #e1dfdd;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 8px;
+    gap: 6px;
+    position: relative;
+}
+
+.od-host-rail-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 17px;
+    color: #484644;
+    position: relative;
+}
+
+.od-host-rail-btn:hover {
+    background: #e1dfdd;
+}
+
+.od-host-rail-btn.active {
+    color: #0078d4;
+    background: #e8f2fc;
+}
+
+.od-host-rail-btn.active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 3px;
+    background: #0078d4;
+    border-radius: 2px;
+}
+
+/* Vyskakovací okno aplikací v Outlooku (Screen 01) a Teams (Screen 03) */
+.od-apps-popover {
+    position: absolute;
+    left: 52px;
+    top: 120px;
+    width: 310px;
+    background: #ffffff;
+    border: 1px solid #d2d0ce;
+    border-radius: 8px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+    padding: 14px;
+    z-index: 600;
+}
+
+.od-apps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.od-app-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 4px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 11px;
+    text-align: center;
+    border: 1px solid transparent;
+}
+
+.od-app-tile:hover {
+    background: #f3f2f1;
+    border-color: #c8c6c4;
+}
+
+.od-app-tile.highlight {
+    background: #eff6fc;
+    border-color: #0078d4;
+    font-weight: 600;
+}
+
+/* Levé menu OneDrive (Domů, Moje soubory, Sdílené, Knihovny, Rychlý přístup) */
+.od-left-sidebar {
+    width: 235px;
+    background: #f8f8f8;
+    border-right: 1px solid #edebe9;
+    padding: 14px 10px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    font-size: 13px;
+}
+
+.od-btn-create {
+    background: #1f4e8c;
+    color: #ffffff;
+    border: none;
+    border-radius: 20px;
+    padding: 9px 16px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.od-btn-create:hover {
+    background: #163a69;
+}
+
+.od-nav-link {
+    padding: 7px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #323130;
+    margin-bottom: 2px;
+}
+
+.od-nav-link:hover {
+    background: #edebe9;
+}
+
+.od-nav-link.active {
+    background: #e1dfdd;
+    font-weight: 600;
+    color: #000000;
+}
+
+.od-nav-section-title {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #605e5c;
+    margin: 14px 10px 6px;
+}
+
+.od-lib-badge {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* Pravá pracovní plocha OneDrive */
+.od-content-area {
+    flex: 1;
+    padding: 20px 28px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Karty "Pro vás" nahoře (Screen 01, 03, 04) */
+.od-for-you-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.od-for-you-card {
+    background: #ffffff;
+    border: 1px solid #e1dfdd;
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+}
+
+.od-card-open-btn {
+    padding: 5px 14px;
+    border: 1px solid #8a8886;
+    border-radius: 4px;
+    background: #ffffff;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    width: fit-content;
+}
+
+.od-card-open-btn:hover {
+    background: #f3f2f1;
+}
+
+/* Lišta příkazů nad tabulkou (Otevřít, Sdílet, Kopírovat odkaz...) - Screen 02, 03 */
+.od-command-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: #faf9f8;
+    border: 1px solid #edebe9;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    font-size: 12.5px;
+}
+
+.od-cmd-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.od-cmd-btn {
+    background: transparent;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #323130;
+    font-size: 12.5px;
+}
+
+.od-cmd-btn:hover {
+    background: #edebe9;
+}
+
+/* Pilulkové filtry typu dokumentu (Vše, Word, Excel, PowerPoint, PDF) - Screen 01, 04 */
+.od-type-pills {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    gap: 10px;
+}
+
+.od-pill-btn {
+    padding: 5px 14px;
+    border-radius: 16px;
+    border: 1px solid #d2d0ce;
+    background: #ffffff;
+    cursor: pointer;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.od-pill-btn.active {
+    background: #eff6fc;
+    border-color: #0078d4;
+    color: #005a9e;
+    font-weight: 600;
+}
+
+/* Tabulka souborů */
+.od-files-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.od-files-table th {
+    text-align: left;
+    padding: 10px 12px;
+    font-weight: 600;
+    color: #605e5c;
+    border-bottom: 1px solid #edebe9;
+    font-size: 12px;
+}
+
+.od-files-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #f3f2f1;
+    color: #323130;
+}
+
+.od-file-row {
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+.od-file-row:hover {
+    background: #f3f2f1;
+}
+
+.od-file-row.selected {
+    background: #e8f2fc;
+}
+
+.od-row-check {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid #8a8886;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: transparent;
+}
+
+.od-file-row.selected .od-row-check {
+    background: #005a9e;
+    border-color: #005a9e;
+    color: #ffffff;
+}
+
+/* Kontextové menu na pravé myšítko / ••• (Screen 02, 03) */
+.od-context-menu {
+    position: fixed;
+    width: 245px;
+    background: #ffffff;
+    border: 1px solid #d2d0ce;
+    border-radius: 8px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+    padding: 6px 0;
+    z-index: 950;
+    font-size: 13px;
+}
+
+.od-ctx-item {
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    color: #201f1e;
+}
+
+.od-ctx-item:hover {
+    background: #f3f2f1;
+}
+
+.od-ctx-sep {
+    height: 1px;
+    background: #edebe9;
+    margin: 4px 0;
+}
+
+/* Modální dialogy (Nahrání souboru, Sdílení odkazu, Historie verzí) */
+.od-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 900;
+}
+
+.od-modal-box {
+    width: 480px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.32);
+    padding: 22px;
+}
+
+/* Ovladatelnost: všechny klikací prvky ukazují ruku */
+[data-launch-env],
+[data-od-nav],
+[data-od-lib],
+[data-od-file],
+[data-od-ctx],
+[data-od-open-card],
+[data-od-tile],
+.od-ctx-item,
+.od-nav-link,
+.od-pill-btn,
+.od-host-rail-btn,
+.od-app-tile,
+.od-tb-icon,
+.od-desk-icon,
+.od-launcher-tile,
+.od-cmd-btn,
+.od-tree-item,
+.od-tree-toggle,
+button {
+    cursor: pointer;
+}
+
+/* Dekorace nesmí zachytávat kliky na ikony pod ní */
+.od-win11-bloom,
+.od-decor {
+    pointer-events: none;
+}
+
+.od-desk-icon,
+.od-desktop-icons > * {
+    position: relative;
+    z-index: 2;
+}
+
+.od-modal-backdrop {
+    cursor: default;
+}
+
+.od-modal-box {
+    cursor: auto;
+}
+

@@ -1,0 +1,1050 @@
+/**
+ * ============================================================================
+ * PIXEL-PERFECT STYL MODULU MICROSOFT OUTLOOK (outlook.css)
+ * Klasický desktopový vzhled (Fluent / Office 365 Desktop UI)
+ * ============================================================================
+ */
+
+.ol-app {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    background-color: #f3f2f1;
+    color: #201f1e;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    font-size: 12px;
+    line-height: 1.35;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.ol-app * {
+    box-sizing: border-box;
+}
+
+/* --- 1. HORNÍ MODRÁ LIŠTA OKNA (TITLEBAR) --- */
+.ol-titlebar {
+    height: 40px;
+    background-color: #0078d4;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    flex-shrink: 0;
+}
+.ol-titlebar-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 180px;
+}
+.ol-qaccess-icon {
+    opacity: 0.9;
+    cursor: pointer;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+}
+.ol-qaccess-icon:hover { opacity: 1; }
+
+.ol-search-box {
+    width: 420px;
+    max-width: 38vw;
+    height: 28px;
+    background-color: #cde6f7;
+    border-radius: 4px;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #004578;
+    transition: background 0.15s;
+}
+.ol-search-box:focus-within {
+    background-color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+.ol-search-box input {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    font-size: 12px;
+    color: #201f1e;
+}
+.ol-search-box input::placeholder { color: #005a9e; }
+
+.ol-titlebar-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+.ol-avatar-top {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #004578;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255,255,255,0.75);
+}
+.ol-win-controls {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-left: 6px;
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+/* --- 2. ŘÁDEK HLAVNÍHO MENU (Soubor | Domů | Posílání a příjem...) --- */
+.ol-menubar {
+    height: 30px;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px 0 6px;
+    border-bottom: 1px solid #edebe9;
+    flex-shrink: 0;
+}
+.ol-menubar-left {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    gap: 2px;
+}
+.ol-menu-item {
+    padding: 0 10px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #323130;
+    font-size: 12px;
+    border-bottom: 2px solid transparent;
+}
+.ol-menu-item:hover { background-color: #f3f2f1; }
+.ol-menu-item.active {
+    color: #0078d4;
+    font-weight: 600;
+    border-bottom-color: #0078d4;
+}
+.ol-menu-item.file-btn {
+    color: #323130;
+    font-weight: 400;
+}
+.ol-menu-item.file-btn:hover {
+    color: #0078d4;
+}
+.ol-menubar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 11.5px;
+    color: #323130;
+}
+.ol-toggle-switch {
+    width: 32px;
+    height: 16px;
+    border: 1px solid #605e5c;
+    border-radius: 10px;
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 4px;
+}
+.ol-toggle-switch::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: #605e5c;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 3px;
+}
+.ol-copilot-pill {
+    border: 1px solid #d2d0ce;
+    border-radius: 4px;
+    padding: 2px 8px;
+    background: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11.5px;
+    cursor: pointer;
+}
+
+/* --- 3. PÁS KARET (CLASSIC RIBBON) --- */
+.ol-ribbon {
+    height: 82px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #d2d0ce;
+    padding: 4px 10px 2px;
+    display: flex;
+    align-items: stretch;
+    gap: 4px;
+    flex-shrink: 0;
+    overflow-x: auto;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+.ol-rgroup {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0 8px 0 4px;
+    border-right: 1px solid #edebe9;
+}
+.ol-rgroup:last-child { border-right: none; }
+.ol-rgroup-content {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex: 1;
+}
+.ol-rgroup-title {
+    text-align: center;
+    font-size: 10.5px;
+    color: #605e5c;
+    padding-top: 1px;
+    white-space: nowrap;
+}
+
+/* Velké tlačítko v pásu karet */
+.ol-rbtn-lg {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    padding: 3px 6px;
+    min-width: 48px;
+    height: 58px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    color: #323130;
+    font-size: 11px;
+    line-height: 1.15;
+    text-align: center;
+}
+.ol-rbtn-lg:hover { background-color: #f3f2f1; border-color: #e1dfdd; }
+.ol-rbtn-lg.active { background-color: #cde6f7; border-color: #0078d4; font-weight: 600; }
+.ol-rbtn-lg svg {
+    width: 22px;
+    height: 22px;
+    margin-bottom: 3px;
+    flex-shrink: 0;
+}
+
+/* Sloupec 3 malých tlačítek nad sebou v pásu karet */
+.ol-rstack {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1px;
+}
+.ol-rbtn-sm {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    padding: 1px 6px;
+    height: 19px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #323130;
+    font-size: 11px;
+    white-space: nowrap;
+}
+.ol-rbtn-sm:hover { background-color: #f3f2f1; border-color: #e1dfdd; }
+.ol-rbtn-sm svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+/* --- 4. HLAVNÍ PRACOVNÍ PLOCHA (4 SLOUPCE + LEVÁ LIŠTA) --- */
+.ol-workspace {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+/* 4A. Levá svislá lišta modulů (App Bar) */
+.ol-appbar {
+    width: 40px;
+    background-color: #f3f2f1;
+    border-right: 1px solid #d2d0ce;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 6px;
+    gap: 4px;
+    flex-shrink: 0;
+}
+.ol-appbar-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #484644;
+    position: relative;
+}
+.ol-appbar-btn:hover { background-color: #e1dfdd; color: #0078d4; }
+.ol-appbar-btn.active { color: #0078d4; }
+.ol-appbar-btn.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 7px;
+    bottom: 7px;
+    width: 2.5px;
+    background-color: #0078d4;
+}
+.ol-appbar-btn svg { width: 17px; height: 17px; }
+
+/* 4B. Levý strom složek (Folder Pane) */
+.ol-folderpane {
+    width: 205px;
+    background-color: #f3f2f1;
+    border-right: 1px solid #d2d0ce;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 6px 0;
+    flex-shrink: 0;
+}
+.ol-fsection-head {
+    padding: 5px 10px 3px;
+    font-weight: 600;
+    color: #201f1e;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+.ol-fitem {
+    padding: 4px 12px 4px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    color: #201f1e;
+    font-size: 12px;
+    white-space: nowrap;
+}
+.ol-fitem.sub { padding-left: 34px; }
+.ol-fitem:hover { background-color: #e1dfdd; }
+.ol-fitem.active {
+    background-color: #c7e0f4;
+    font-weight: 600;
+}
+.ol-fcount {
+    color: #0078d4;
+    font-weight: 700;
+    font-size: 11.5px;
+}
+
+/* 4C. Prostřední seznam zpráv (Message List) */
+.ol-msglist {
+    width: 320px;
+    background-color: #ffffff;
+    border-right: 1px solid #d2d0ce;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+.ol-msglist-header {
+    height: 36px;
+    padding: 0 14px;
+    border-bottom: 1px solid #edebe9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+.ol-pivots {
+    display: flex;
+    gap: 14px;
+    height: 100%;
+}
+.ol-pivot {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #605e5c;
+    font-size: 13px;
+    border-bottom: 2px solid transparent;
+}
+.ol-pivot.active {
+    color: #0078d4;
+    font-weight: 600;
+    border-bottom-color: #0078d4;
+}
+.ol-sort-label {
+    font-size: 11.5px;
+    color: #323130;
+    cursor: pointer;
+}
+
+.ol-msglist-scroll {
+    flex: 1;
+    overflow-y: auto;
+}
+.ol-group-bar {
+    background-color: #f3f2f1;
+    padding: 4px 10px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #323130;
+    border-bottom: 1px solid #e1dfdd;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.ol-msg-row {
+    padding: 8px 12px 9px 14px;
+    border-bottom: 1px solid #edebe9;
+    cursor: pointer;
+    position: relative;
+    background-color: #ffffff;
+    border-left: 3.5px solid transparent;
+}
+.ol-msg-row:hover { background-color: #f3f2f1; }
+.ol-msg-row.unread { border-left-color: #0078d4; }
+.ol-msg-row.selected {
+    background-color: #cde6f7;
+    outline: 1px dotted #605e5c;
+    outline-offset: -2px;
+}
+.ol-msg-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 13px;
+    color: #201f1e;
+}
+.ol-msg-row.unread .ol-msg-top { font-weight: 600; }
+.ol-msg-sub {
+    font-size: 11.5px;
+    color: #323130;
+    margin-top: 2px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+}
+.ol-msg-sub-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ol-msg-row.unread .ol-msg-sub-text {
+    color: #0078d4;
+    font-weight: 600;
+}
+.ol-msg-time {
+    font-size: 11px;
+    color: #605e5c;
+    flex-shrink: 0;
+}
+.ol-msg-row.unread .ol-msg-time {
+    color: #0078d4;
+    font-weight: 600;
+}
+.ol-cat-tag {
+    display: inline-block;
+    font-size: 10.5px;
+    padding: 1px 7px;
+    border-radius: 2px;
+    margin-top: 4px;
+    color: #201f1e;
+    border-left: 4px solid #d83b01;
+    background: #f9d9d9;
+}
+
+/* 4D. Podokno čtení (Reading Pane - Screen 01 & 12) */
+.ol-readpane {
+    flex: 1;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+.ol-read-empty {
+    margin: auto;
+    text-align: center;
+    color: #605e5c;
+    padding: 20px;
+}
+.ol-read-empty svg {
+    width: 48px;
+    height: 36px;
+    stroke: #8a8886;
+    margin-bottom: 8px;
+}
+.ol-read-content {
+    padding: 16px 22px;
+}
+.ol-read-subject {
+    font-size: 17px;
+    font-weight: 400;
+    color: #201f1e;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+.ol-read-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+.ol-read-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e3008c;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.ol-read-actions {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
+}
+.ol-read-actbtn {
+    width: 30px;
+    height: 28px;
+    border: 1px solid #d2d0ce;
+    background: #ffffff;
+    border-radius: 3px;
+    cursor: pointer;
+    color: #0078d4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ol-read-actbtn:hover { background: #f3f2f1; }
+.ol-infobar {
+    background-color: #f3f2f1;
+    border-left: 3px solid #0078d4;
+    padding: 6px 10px;
+    font-size: 11px;
+    color: #323130;
+    margin-bottom: 12px;
+}
+
+/* 4E. Pravý postranní panel s kalendářem a agendou (To-Do Bar - Screen 01) */
+.ol-todopane {
+    width: 230px;
+    background-color: #ffffff;
+    border-left: 1px solid #d2d0ce;
+    display: flex;
+    flex-direction: column;
+    padding: 8px 12px;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+.ol-minical-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 4px 0;
+}
+.ol-minical-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    font-size: 11px;
+    margin-bottom: 12px;
+}
+.ol-minical-table th {
+    color: #605e5c;
+    font-weight: 400;
+    padding: 3px 0;
+    font-size: 10px;
+}
+.ol-minical-table td {
+    padding: 3px 0;
+    color: #201f1e;
+}
+.ol-minical-table td.muted { color: #a19f9d; }
+.ol-minical-table td.wknum { color: #a19f9d; font-size: 9.5px; text-align: left; }
+.ol-minical-table td.today {
+    background-color: #0078d4;
+    color: #ffffff;
+    font-weight: 700;
+}
+.ol-agenda-group {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #201f1e;
+    margin: 8px 0 4px;
+    border-top: 1px solid #edebe9;
+    padding-top: 6px;
+}
+.ol-agenda-row {
+    display: flex;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 11px;
+    align-items: flex-start;
+}
+.ol-agenda-time {
+    width: 44px;
+    color: #605e5c;
+    text-align: right;
+    flex-shrink: 0;
+    font-size: 10.5px;
+}
+.ol-agenda-card {
+    flex: 1;
+    border-left: 3px solid #0078d4;
+    padding: 2px 6px;
+    background: #ffffff;
+}
+.ol-agenda-card.yellow {
+    border-left-color: #fce100;
+    background-color: #fffef0;
+}
+.ol-agenda-card.yellow-solid {
+    background-color: #f9e73c;
+    border-left-color: #0078d4;
+    font-weight: 600;
+}
+
+/* --- 5. SPODNÍ STAVOVÝ ŘÁDEK (STATUS BAR) --- */
+.ol-statusbar {
+    height: 23px;
+    background-color: #f3f2f1;
+    border-top: 1px solid #d2d0ce;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #323130;
+    flex-shrink: 0;
+}
+
+/* --- 6. OBRAZOVKA KALENDÁŘE (Screen 02) --- */
+.ol-calview {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    background: #ffffff;
+}
+.ol-cal-sidebar {
+    width: 205px;
+    background: #f3f2f1;
+    border-right: 1px solid #d2d0ce;
+    padding: 10px;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+.ol-cal-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.ol-cal-top-nav {
+    height: 42px;
+    padding: 0 16px;
+    border-bottom: 1px solid #e1dfdd;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.ol-cal-weekgrid {
+    display: grid;
+    grid-template-columns: 46px repeat(7, 1fr);
+    flex: 1;
+    overflow-y: auto;
+}
+.ol-cal-dayhead {
+    border-left: 1px solid #e1dfdd;
+    border-bottom: 1px solid #e1dfdd;
+    padding: 6px 8px;
+    background: #ffffff;
+}
+.ol-cal-dayhead.active-day {
+    border-top: 3px solid #c50f1f;
+    border-left: 1px solid #c50f1f;
+    border-right: 1px solid #c50f1f;
+}
+.ol-cal-dayname { font-size: 12px; color: #323130; font-weight: 600; }
+.ol-cal-daynum {
+    font-size: 16px;
+    font-weight: 400;
+    color: #323130;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2px;
+}
+.ol-cal-allday-banner {
+    grid-column: 2 / 6;
+    background: #e8b3b9;
+    border-left: 3px solid #a4262c;
+    color: #201f1e;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    margin: 2px;
+    text-align: center;
+}
+.ol-cal-slot {
+    height: 44px;
+    border-left: 1px solid #e1dfdd;
+    border-bottom: 1px solid #edebe9;
+    position: relative;
+    cursor: pointer;
+    padding: 1px;
+}
+.ol-cal-slot.dotted {
+    background-image: radial-gradient(#d2b4bc 1px, transparent 1px);
+    background-size: 5px 5px;
+}
+.ol-cal-slot.active-col {
+    border-left-color: #c50f1f;
+    border-right: 1px solid #c50f1f;
+}
+.ol-cal-block {
+    padding: 3px 6px;
+    font-size: 10.5px;
+    line-height: 1.2;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 2px;
+}
+.ol-cal-block.rose {
+    background: #e8b3b9;
+    border-left: 4px solid #a4262c;
+    color: #201f1e;
+}
+.ol-cal-block.yellow {
+    background: #f9e73c;
+    border-left: 4px solid #0078d4;
+    color: #201f1e;
+}
+.ol-cal-block.green {
+    background: #9fd8b5;
+    border-left: 4px solid #107c10;
+    color: #201f1e;
+}
+
+/* --- 7. KONTEXTOVÉ MENU NA PRAVÉ TLAČÍTKO MYŠI (Screen 09, 10, 12, 15) --- */
+.ol-ctx-popup {
+    position: fixed;
+    background: #ffffff;
+    border: 1px solid #c8c6c4;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.22);
+    width: 235px;
+    padding: 4px 0;
+    z-index: 3000;
+    font-size: 12px;
+}
+.ol-ctx-item {
+    padding: 5px 12px 5px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    color: #201f1e;
+    position: relative;
+}
+.ol-ctx-item:hover { background-color: #edebe9; }
+.ol-ctx-item-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.ol-ctx-icon {
+    width: 16px;
+    text-align: center;
+    font-size: 13px;
+    display: inline-flex;
+    justify-content: center;
+}
+.ol-ctx-sep { height: 1px; background: #edebe9; margin: 3px 0; }
+.ol-ctx-sub {
+    position: absolute;
+    left: 100%;
+    top: -4px;
+    background: #ffffff;
+    border: 1px solid #c8c6c4;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.22);
+    width: 245px;
+    padding: 4px 0;
+    z-index: 3100;
+}
+.ol-cat-box {
+    width: 12px;
+    height: 12px;
+    border: 1px solid rgba(0,0,0,0.25);
+    display: inline-block;
+}
+
+/* --- 8. BACKSTAGE MENU "SOUBOR" (Screen 06, 13) --- */
+.ol-backstage {
+    position: absolute;
+    inset: 0;
+    background: #ffffff;
+    z-index: 900;
+    display: flex;
+}
+.ol-bs-sidebar {
+    width: 175px;
+    background: #f3f2f1;
+    border-right: 1px solid #d2d0ce;
+    padding: 12px 0;
+    display: flex;
+    flex-direction: column;
+}
+.ol-bs-backbtn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid #323130;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 4px 0 14px 18px;
+    cursor: pointer;
+    font-size: 14px;
+}
+.ol-bs-backbtn:hover { background: #e1dfdd; }
+.ol-bs-navitem {
+    padding: 9px 18px;
+    font-size: 12.5px;
+    color: #201f1e;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.ol-bs-navitem:hover { background: #e1dfdd; }
+.ol-bs-navitem.active {
+    color: #0078d4;
+    font-weight: 600;
+    background: #ffffff;
+    border-left: 3px solid #0078d4;
+}
+.ol-bs-main {
+    flex: 1;
+    padding: 24px 42px;
+    overflow-y: auto;
+    background: #fafafa;
+}
+.ol-bs-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    margin-bottom: 22px;
+    max-width: 680px;
+}
+.ol-bs-squarebtn {
+    width: 108px;
+    height: 92px;
+    background: #ffffff;
+    border: 1px solid #c8c6c4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    padding: 8px;
+    text-align: center;
+    font-size: 11.5px;
+    color: #201f1e;
+    flex-shrink: 0;
+}
+.ol-bs-squarebtn:hover {
+    border-color: #0078d4;
+    background: #f3f9fd;
+}
+.ol-quota-bar {
+    width: 240px;
+    height: 18px;
+    border: 1px solid #a19f9d;
+    background: #ffffff;
+    margin: 6px 0 4px;
+    overflow: hidden;
+}
+.ol-quota-fill {
+    width: 14%;
+    height: 100%;
+    background: #0078d4;
+}
+
+/* --- 9. VYSKAKOVACÍ OKNA A DIALOGY (Screen 03–08, 11, 14, 16) --- */
+.ol-modal-layer {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+.ol-win-frame {
+    width: 98%;
+    height: 96%;
+    background: #ffffff;
+    border: 1px solid #0078d4;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.35);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.ol-dialog-frame {
+    width: 740px;
+    max-width: 96%;
+    max-height: 94%;
+    background: #ffffff;
+    border: 1px solid #605e5c;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.35);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.ol-dialog-top {
+    height: 32px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #edebe9;
+    font-size: 12px;
+    color: #201f1e;
+}
+.ol-send-tall {
+    width: 54px;
+    height: 74px;
+    background: #ffffff;
+    border: 1px solid #8a8886;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    color: #201f1e;
+    flex-shrink: 0;
+}
+.ol-send-tall:hover { background: #deecf9; border-color: #0078d4; }
+.ol-field-line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 0;
+    border-bottom: 1px solid #e1dfdd;
+}
+.ol-pill-btn {
+    min-width: 118px;
+    padding: 4px 10px;
+    background: #ffffff;
+    border: 1px solid #8a8886;
+    border-radius: 3px;
+    font-size: 11.5px;
+    cursor: pointer;
+    text-align: center;
+}
+.ol-pill-btn:hover { background: #f3f2f1; }
+
+/* Pomocník pro plánování (Screen 05) */
+.ol-sched-grid {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11.5px;
+    margin-top: 8px;
+}
+.ol-sched-grid th, .ol-sched-grid td {
+    border: 1px solid #d2d0ce;
+    padding: 6px 8px;
+}
+.ol-sched-bar-busy {
+    background-color: #4b53bc;
+    color: #ffffff;
+    font-weight: 600;
+    text-align: center;
+}
+.ol-sched-bar-tentative {
+    background: repeating-linear-gradient(45deg, #e1dfdd, #e1dfdd 4px, #ffffff 4px, #ffffff 8px);
+}
+.ol-sched-slot-free {
+    border-left: 2.5px solid #0078d4 !important;
+    border-right: 2.5px solid #0078d4 !important;
+    background-color: rgba(0, 120, 212, 0.06);
+    cursor: pointer;
+    text-align: center;
+    font-weight: 600;
+    color: #005a9e;
+}
+.ol-sched-slot-free.selected {
+    background-color: #cde6f7;
+}
+
+/* Panel Místnosti vpravo (Screen 04) */
+.ol-rooms-panel {
+    width: 280px;
+    border-left: 1px solid #d2d0ce;
+    background: #ffffff;
+    padding: 12px;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+.ol-room-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 7px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    margin-bottom: 4px;
+}
+.ol-room-item:hover, .ol-room-item.selected {
+    background: #deecf9;
+    border-color: #0078d4;
+}
+.ol-room-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #0078d4;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 13px;
+}

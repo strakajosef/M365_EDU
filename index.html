@@ -1,0 +1,191 @@
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M365 EduAréna</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+
+    <div class="app-layout">
+        <main class="main-stage">
+            
+            <!-- Horní navigační lišta -->
+            <header class="top-bar">
+                <div class="brand">
+                    <span class="brand-badge">M365</span>
+                    <h1>EduAréna s AjMossem</h1>
+                </div>
+                <div class="top-bar-actions">
+                    <button id="btn-back-to-menu" class="btn btn-outline hidden">⬅ Zpět do hlavního menu</button>
+                </div>
+            </header>
+
+            <!-- OBRAZOVKA 1: HLAVNÍ MENU (ROZCESTNÍK + VÝBĚR ÚROVNĚ) -->
+            <section id="screen-menu" class="screen">
+                <div class="menu-intro">
+                    <h2>1. Vyber si svou úroveň znalostí</h2>
+                    <p>Podle zvolené úrovně se ti ve hře budou losovat praktické úkoly a nastaví se časový limit.</p>
+                    
+                    <div class="level-selector" id="user-level-selector">
+                        <button class="level-btn active" data-level="0">
+                            <strong>0 – Základní</strong>
+                            <span>Pouze základní úkoly (90 s)</span>
+                        </button>
+                        <button class="level-btn" data-level="1">
+                            <strong>1 – Pokročilý</strong>
+                            <span>Základní + Pokročilé (50 s)</span>
+                        </button>
+                        <button class="level-btn" data-level="2">
+                            <strong>2 – Specialista</strong>
+                            <span>Až po úroveň Specialista (40 s)</span>
+                        </button>
+                        <button class="level-btn" data-level="3">
+                            <strong>3 – Expert</strong>
+                            <span>Všechny úkoly bez omezení (30 s)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="menu-intro" style="margin-top: 10px; margin-bottom: 14px;">
+                    <h2>2. Vyber si herní režim</h2>
+                </div>
+
+                <div class="games-grid">
+                    <!-- Soutěžní hry (Riskuj, Kolo štěstí, ...) se vkládají přes GameRegistry před tuto kartu -->
+
+                    <!-- Volný trénink (Otevřený Sandbox s nápovědou na najetí myši) -->
+                    <article class="game-card" id="card-start-freesandbox">
+                        <div class="game-card-image placeholder-box" style="background: #fff url('education.png') center / contain no-repeat;">
+							<span></span>
+						</div>
+                        <div class="game-card-body">
+                            <span class="tag tag-sandbox">Bez časového limitu + Nápověda</span>
+                            <h3>Volný trénink</h3>
+                            <p>Otevři si simulované prostředí libovolné aplikace, přepínej si úkoly a trénuj vlastním tempem. Když si nebudeš vědět rady, najeď myší na ikonku AjMosse 💡.</p>
+                            <div class="free-sandbox-buttons" style="flex-wrap: wrap;">
+                                <button class="btn btn-outline btn-sm" data-free-app="copilot">Copilot</button>
+                                <button class="btn btn-outline btn-sm" data-free-app="onedrive">OneDrive</button>
+                                <button class="btn btn-outline btn-sm" data-free-app="teams">Teams</button>
+                                <button class="btn btn-outline btn-sm" data-free-app="outlook">Outlook</button>
+                                <button class="btn btn-outline btn-sm" data-free-app="onenote">OneNote</button>
+                                <button class="btn btn-outline btn-sm" data-free-app="forms">Forms</button>
+                                <button class="btn btn-outline btn-sm" data-free-app="todo">To Do</button>
+                                <button class="btn btn-outline btn-sm" data-free-app="planner">Planner</button>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Obrazovky her (screen-riskuj, screen-kolo_stesti, ...) se vytvářejí přes GameRegistry -->
+
+            <!-- OBRAZOVKA: OTEVŘENÝ SANDBOX -->
+            <section id="screen-sandbox" class="screen hidden sandbox-screen-wrapper">
+                <div class="sandbox-mission-bar">
+                    <div class="sandbox-mission-info">
+                        <span id="sandbox-app-badge" class="tag tag-active">APLIKACE</span>
+                        <div class="sandbox-mission-text-wrap">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <h3 id="sandbox-topic-title">Název tématu</h3>
+                                <!-- Ikonka nápovědy (zobrazuje se POUZE ve volném tréninku, po najetí myší ukáže postup) -->
+                                <div id="sandbox-hint-wrapper" class="hint-tooltip-wrapper hidden">
+                                    <span class="hint-icon-badge">💡 Jak na to? (Nápověda)</span>
+                                    <div id="sandbox-hint-popup" class="hint-tooltip-popup">Text nápovědy...</div>
+                                </div>
+                            </div>
+                            <p id="sandbox-task-desc">Zadání praktického úkolu...</p>
+                        </div>
+                    </div>
+
+                    <div class="sandbox-metrics">
+                        <div class="metric-pill" id="sandbox-timer-box">
+                            ⏱️ Čas: <strong id="sandbox-timer">01:30</strong>
+                        </div>
+                        <div class="metric-pill" id="sandbox-lives-box">
+                            ❤️ Pokusy: <strong id="sandbox-lives">3 / 3</strong>
+                        </div>
+                        <button id="btn-abort-sandbox" class="btn btn-danger btn-sm">Vzdat misi</button>
+                    </div>
+                </div>
+
+                <div id="sandbox-viewport" class="sandbox-viewport"></div>
+            </section>
+
+        </main>
+
+        <!-- POSTRANNÍ PANEL: SOUTĚŽNÍ STOLEČEK A MODERÁTOR -->
+        <aside class="sidebar-panel">
+            <div class="podium-desk">
+                <div class="podium-top"></div>
+                <div class="podium-body">
+                    <span class="podium-label">SOUTĚŽNÍ STOLEČEK</span>
+                    <div id="score-display" class="score-screen">0</div>
+                    <span class="podium-unit">BODŮ</span>
+                </div>
+            </div>
+
+            <div class="moderator-container">
+                <div class="speech-bubble" id="speech-bubble">
+                    <p id="moderator-text">Vítej v tréninkovém centru M365!</p>
+                </div>
+
+                <div class="moderator-avatar" id="moderator-avatar-box">
+                    <img src="moderator_norm.png" 
+                         alt="Moderátor soutěže" 
+                         id="moderator-img">
+                    <span id="moderator-hover-badge" class="moderator-hover-badge hidden">
+                        💡 Najeď na mě myší pro návod
+                    </span>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- MODÁLNÍ OKNO: ZÁVĚREČNÉ VYHODNOCENÍ HRY -->
+    <div id="modal-evaluation" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <div class="modal-card-header" style="background: var(--m365-blue);">
+                <span class="modal-badge">Konec soutěže</span>
+                <span class="modal-points">Výsledková listina</span>
+            </div>
+            <div class="modal-card-body text-center">
+                <h2 id="final-verdict">Zde je tvé vyhodnocení:</h2>
+                <div class="final-score-box">
+                    <span>Celkové skóre</span>
+                    <strong id="final-score-value">0</strong>
+                    <small>bodů</small>
+                </div>
+                <div class="recommendations-box">
+                    <h3>Doporučení pro další studium (dle tvých chyb):</h3>
+                    <div id="evaluation-recommendations" class="recommendations-content"></div>
+                </div>
+            </div>
+            <div class="modal-card-footer">
+                <button id="btn-play-again" class="btn btn-primary">Hrát znovu</button>
+                <button id="btn-eval-to-menu" class="btn btn-outline">Zpět do menu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Plovoucí notifikace (Toast) -->
+    <div id="sandbox-toast" class="sandbox-toast hidden"></div>
+
+    <!-- NAČTENÍ SKRIPTŮ -->
+    <script src="missions-data.js"></script>
+    <script src="teams.js"></script>
+    <script src="outlook.js"></script>
+    <script src="onedrive.js"></script>
+    <script src="onenote.js"></script>
+    <script src="copilot.js"></script>
+    <script src="forms.js"></script>
+    <script src="todo.js"></script>
+    <script src="planner.js"></script>
+    <script src="game-registry.js"></script>
+    <script src="riskuj.js"></script>
+    <script src="kolo_stesti.js"></script>
+<script src="jednoruky_bandita.js"></script>
+<script src="utec_z_prace.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+/* ============================================================
+   ONEDRIVE UVNITŘ TEAMS (podle onedrive/onedrive_teams.png)
+   Načítá se přes teams.js → ensureEmbeddedOneDriveStylesheet()
+   Vše je omezeno na #od-embedded-root, aby se nic nepřelilo do zbytku aplikace.
+   ============================================================ */
+
+#od-embedded-root {
+    flex: 1;
+    display: flex;
+    position: relative;
+    overflow: hidden;
+    background: #f5f5f5;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    color: #242424;
+    box-sizing: border-box;
+    min-height: 0;
+}
+
+#od-embedded-root *,
+#od-embedded-root *::before,
+#od-embedded-root *::after {
+    box-sizing: border-box;
+}
+
+/* ---------- Levý panel ---------- */
+#od-embedded-root .od-left-sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    background: #f5f5f5;
+    border-right: none;
+    padding: 18px 12px 12px 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+#od-embedded-root .od-left-sidebar > div:first-child {
+    font-size: 20px;
+    font-weight: 600;
+    color: #242424;
+    margin: 0 0 14px 4px;
+}
+
+#od-embedded-root .od-btn-create {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: #5b5fc7;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 16px;
+    box-shadow: none;
+}
+
+#od-embedded-root .od-btn-create:hover {
+    background: #4f52b2;
+}
+
+#od-embedded-root .od-nav-link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #242424;
+    cursor: pointer;
+    margin-bottom: 2px;
+    text-decoration: none;
+}
+
+#od-embedded-root .od-nav-link:hover {
+    background: #ebebeb;
+}
+
+#od-embedded-root .od-nav-link.active {
+    background: #e6e6f5;
+    font-weight: 600;
+    color: #242424;
+}
+
+#od-embedded-root .od-nav-link.active::before {
+    content: "";
+    position: absolute;
+    left: -8px;
+    top: 6px;
+    bottom: 6px;
+    width: 3px;
+    border-radius: 2px;
+    background: #5b5fc7;
+}
+
+#od-embedded-root .od-nav-section-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #616161;
+    text-transform: none;
+    margin: 18px 12px 6px;
+}
+
+/* ---------- Hlavní oblast ---------- */
+#od-embedded-root .od-content-area {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    padding: 20px 24px 24px 12px;
+    overflow-y: auto;
+}
+
+#od-embedded-root .od-content-area > h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #242424;
+    margin: 0 0 14px;
+}
+
+/* Karta „Pro vás“ */
+#od-embedded-root .od-for-you-card {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 16px;
+    box-shadow: none;
+}
+
+#od-embedded-root .od-card-open-btn {
+    background: #ffffff;
+    color: #242424;
+    border: 1px solid #d1d1d1;
+    border-radius: 4px;
+    padding: 6px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#od-embedded-root .od-card-open-btn:hover {
+    background: #f5f5f5;
+}
+
+/* Filtry (pilulky) */
+#od-embedded-root .od-type-pills {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+#od-embedded-root .od-pill-btn {
+    background: #ffffff;
+    color: #242424;
+    border: 1px solid #d1d1d1;
+    border-radius: 16px;
+    padding: 6px 14px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+#od-embedded-root .od-pill-btn:hover {
+    background: #f5f5f5;
+}
+
+#od-embedded-root .od-pill-btn.active {
+    background: #f0f0ff;
+    border: 1.5px solid #5b5fc7;
+    color: #3c3f9e;
+}
+
+#od-embedded-root .od-type-pills input {
+    width: 260px;
+    padding: 6px 14px;
+    font-size: 13px;
+    background: #ffffff;
+    border: 1px solid #d1d1d1;
+    border-radius: 16px;
+    outline: none;
+}
+
+#od-embedded-root .od-type-pills input:focus {
+    border-color: #5b5fc7;
+}
+
+/* Příkazová lišta */
+#od-embedded-root .od-command-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #ffffff;
+    border: none;
+    border-bottom: 1px solid #e0e0e0;
+    border-radius: 0;
+    padding: 6px 4px;
+    margin-bottom: 0;
+}
+
+/* Tabulka souborů */
+#od-embedded-root .od-files-table {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+}
+
+#od-embedded-root .od-files-table th {
+    font-size: 13px;
+    font-weight: 600;
+    color: #242424;
+    text-align: left;
+    padding: 12px 14px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #ffffff;
+}
+
+#od-embedded-root .od-files-table td {
+    font-size: 14px;
+    color: #242424;
+    padding: 12px 14px;
+    border-bottom: 1px solid #f0f0f0;
+    background: #ffffff;
+}
+
+#od-embedded-root .od-files-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+#od-embedded-root .od-files-table tbody tr:hover td {
+    background: #f5f5f5;
+}

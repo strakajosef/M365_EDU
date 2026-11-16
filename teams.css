@@ -1,0 +1,843 @@
+/**
+ * ============================================================================
+ * STYL MODULU MICROSOFT TEAMS – VĚRNÝ DARK MODE DLE SCREENŮ 01–16 (teams.css)
+ * ============================================================================
+ */
+
+.tm-app {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 100%;
+    background-color: #1f1f1f;
+    color: #ffffff;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 13px;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+}
+
+/* --- HORNÍ VYHLEDÁVACÍ LIŠTA TEAMS --- */
+.tm-titlebar {
+    height: 44px;
+    background-color: #141414;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    border-bottom: 1px solid #2b2b2b;
+    flex-shrink: 0;
+}
+.tm-titlebar-left { display: flex; align-items: center; gap: 14px; color: #adadad; }
+.tm-search-box {
+    width: 420px;
+    max-width: 45vw;
+    background-color: #292929;
+    border: 1px solid #3d3d3d;
+    border-radius: 6px;
+    padding: 5px 12px;
+    color: #d6d6d6;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+}
+.tm-search-box input {
+    background: transparent;
+    border: none;
+    color: white;
+    width: 100%;
+    outline: none;
+    font-size: 12.5px;
+}
+.tm-titlebar-right { display: flex; align-items: center; gap: 12px; }
+.tm-user-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #5b5fc7;
+    color: white;
+    font-weight: 700;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+.tm-status-dot {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 9px;
+    height: 9px;
+    background: #92c353;
+    border: 2px solid #141414;
+    border-radius: 50%;
+}
+
+/* --- HLAVNÍ TĚLO APLIKACE --- */
+.tm-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+/* --- 1. LEVÁ ÚZKÁ LIŠTA IKON (APP RAIL) --- */
+.tm-rail {
+    width: 56px;
+    background-color: #141414;
+    border-right: 1px solid #292929;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 6px;
+    gap: 4px;
+    flex-shrink: 0;
+    z-index: 20;
+}
+.tm-rail-item {
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #adadad;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.15s, color 0.15s;
+    font-size: 17px;
+}
+.tm-rail-item:hover { background-color: #292929; color: #ffffff; }
+.tm-rail-item.active { color: #7f85f5; background-color: #242424; }
+.tm-rail-item.active::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 10px;
+    bottom: 10px;
+    width: 3px;
+    background-color: #7f85f5;
+    border-radius: 2px;
+}
+.tm-rail-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: #f25022;
+    color: white;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 1px 4px;
+    border-radius: 8px;
+}
+
+/* Vysouvací okno aplikací po kliku na ••• v Railu (Screen 16) */
+.tm-apps-flyout {
+    position: absolute;
+    left: 60px;
+    top: 180px;
+    width: 240px;
+    background-color: #292929;
+    border: 1px solid #3d3d3d;
+    border-radius: 8px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
+    padding: 10px;
+    z-index: 150;
+}
+.tm-apps-search {
+    width: 100%;
+    background: #1f1f1f;
+    border: 1px solid #3d3d3d;
+    border-radius: 4px;
+    padding: 6px 10px;
+    color: white;
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+.tm-app-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #e0e0e0;
+    font-size: 12.5px;
+}
+.tm-app-row:hover { background-color: #383838; }
+.tm-app-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: white;
+}
+
+/* --- 2. DRUHÝ SLOUPEC: SEZNAM CHATŮ, KANÁLŮ NEBO AKTIVITY --- */
+.tm-list-pane {
+    width: 295px;
+    background-color: #141414;
+    border-right: 1px solid #292929;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+.tm-pane-header {
+    padding: 14px 16px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.tm-pane-header h2 { font-size: 18px; font-weight: 700; color: #ffffff; }
+.tm-pane-actions { display: flex; gap: 8px; color: #adadad; }
+.tm-icon-btn {
+    background: transparent;
+    border: none;
+    color: #adadad;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+.tm-icon-btn:hover { background: #292929; color: white; }
+
+/* Pilulkové filtry (Nepřečtené | Kanály | Chaty) */
+.tm-filter-pills {
+    display: flex;
+    gap: 6px;
+    padding: 0 16px 10px;
+    border-bottom: 1px solid #242424;
+}
+.tm-pill {
+    background-color: #242424;
+    border: 1px solid #383838;
+    color: #d6d6d6;
+    padding: 3px 10px;
+    border-radius: 14px;
+    font-size: 11.5px;
+    cursor: pointer;
+}
+.tm-pill:hover { background-color: #303030; }
+.tm-pill.active { background-color: #383966; border-color: #7f85f5; color: #ffffff; font-weight: 600; }
+
+/* Scrollovací strom položek v levém panelu */
+.tm-tree-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px 8px;
+}
+.tm-section-label {
+    font-size: 11.5px;
+    color: #999999;
+    padding: 10px 8px 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+.tm-tree-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #d1d1d1;
+    margin-bottom: 1px;
+    position: relative;
+}
+.tm-tree-item:hover { background-color: #242424; color: #ffffff; }
+.tm-tree-item.active { background-color: #292929; color: #ffffff; font-weight: 600; }
+.tm-tree-item.unread { color: #ffffff; font-weight: 700; }
+
+.tm-item-left { display: flex; align-items: center; gap: 9px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.tm-mini-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #383966;
+    color: #e0e0e0;
+    font-size: 10px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.tm-team-square {
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    background: #464eb8;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.tm-channel-indent { padding-left: 34px; font-size: 12.5px; }
+
+.tm-hover-dots {
+    opacity: 0;
+    background: transparent;
+    border: none;
+    color: #adadad;
+    font-weight: 800;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+.tm-tree-item:hover .tm-hover-dots,
+.tm-hover-dots:focus,
+.tm-hover-dots:focus-visible { opacity: 1; }
+.tm-hover-dots:hover { background: #3d3d3d; color: white; }
+.tm-team-header { cursor: pointer; }
+.tm-app-row .tm-pin-btn {
+    margin-left: auto;
+    background: transparent;
+    border: none;
+    color: #adadad;
+    cursor: pointer;
+    opacity: 0;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+.tm-app-row:hover .tm-pin-btn,
+.tm-pin-btn:focus { opacity: 1; }
+.tm-pin-btn:hover { background: #3d3d3d; color: white; }
+[data-info],
+[data-ctx-type],
+[data-select-chat],
+[data-launch-app],
+[data-quick],
+[data-act-click],
+[data-meet-action],
+[data-cal-slot],
+[data-ev-id],
+[data-reaction],
+[data-msg-key] { cursor: pointer; }
+.tm-msg-dots {
+    opacity: 0;
+    background: transparent;
+    border: none;
+    color: #adadad;
+    font-weight: 800;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    align-self: center;
+}
+.tm-chat-row:hover .tm-msg-dots,
+.tm-msg-dots:focus { opacity: 1; }
+.tm-msg-dots:hover { background: #3d3d3d; color: white; }
+.tm-modal-list-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 0; }
+.tm-modal-list-row button { cursor: pointer; }
+.tm-overlay-panel {
+    position: absolute;
+    top: 60px;
+    right: 16px;
+    width: 300px;
+    background: #2b2b2b;
+    border: 1px solid #3d3d3d;
+    border-radius: 8px;
+    padding: 12px;
+    z-index: 600;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    color: #e0e0e0;
+    font-size: 13px;
+}
+.tm-overlay-panel button { cursor: pointer; }
+
+/* Položky v záložce Aktivita (Screen 02) */
+.tm-activity-card {
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    margin-bottom: 4px;
+    display: flex;
+    gap: 10px;
+}
+.tm-activity-card:hover { background: #242424; }
+.tm-activity-card.active { background: #242424; border-color: #ffffff; }
+.tm-act-meta { font-size: 11px; color: #999; margin-top: 2px; }
+
+/* --- 3. HLAVNÍ OBSAHOVÁ PLOCHA (CHAT / KANÁL) --- */
+.tm-main-pane {
+    flex: 1;
+    background-color: #1f1f1f;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.tm-conv-header {
+    height: 52px;
+    padding: 0 20px;
+    border-bottom: 1px solid #2b2b2b;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+.tm-conv-tabs { display: flex; align-items: center; gap: 18px; height: 100%; }
+.tm-conv-title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.tm-tab-link {
+    color: #adadad;
+    cursor: pointer;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid transparent;
+    font-size: 13px;
+}
+.tm-tab-link.active { color: #ffffff; font-weight: 600; border-bottom-color: #7f85f5; }
+.tm-conv-actions { display: flex; align-items: center; gap: 8px; }
+.tm-btn-dark {
+    background: #292929;
+    border: 1px solid #3d3d3d;
+    color: #e0e0e0;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.tm-btn-dark:hover { background: #333333; }
+.tm-btn-purple {
+    background: #5b5fc7;
+    border: 1px solid #7f85f5;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.tm-btn-purple:hover { background: #4f52b2; }
+
+/* Plocha zpráv (Kanál vs Soukromý Chat) */
+.tm-messages-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* Karty příspěvků v kanálu (Screen 01, 02) */
+.tm-channel-post {
+    background: #292929;
+    border: 1px solid #333333;
+    border-radius: 8px;
+    padding: 16px 20px;
+    max-width: 780px;
+}
+.tm-post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.tm-post-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: #ffffff; }
+.tm-video-placeholder {
+    margin-top: 12px;
+    background: #f5f2ff;
+    color: #3b3a39;
+    border-radius: 6px;
+    height: 170px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    border: 1px solid #444;
+}
+.tm-video-top { background: #333333; color: white; padding: 8px 12px; font-size: 12px; display: flex; justify-content: space-between; }
+.tm-video-play { align-self: center; margin: auto; width: 38px; height: 38px; border: 2px solid #5b5fc7; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #5b5fc7; cursor: pointer; }
+.tm-post-reply-bar {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #383838;
+    color: #adadad;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+/* Bubliny v běžném chatu (Screen 07, 08) */
+.tm-chat-row { display: flex; flex-direction: column; max-width: 70%; }
+.tm-chat-row.mine { align-self: flex-end; align-items: flex-end; }
+.tm-chat-bubble {
+    background: #292929;
+    padding: 10px 14px;
+    border-radius: 8px;
+    line-height: 1.45;
+    position: relative;
+}
+.tm-chat-row.mine .tm-chat-bubble { background: #2f2f4a; }
+.tm-reaction-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #242424;
+    border: 1px solid #3d3d3d;
+    border-radius: 12px;
+    padding: 2px 7px;
+    font-size: 11px;
+    margin-top: 4px;
+    cursor: pointer;
+}
+.tm-reactions { display: flex; flex-wrap: wrap; gap: 4px; }
+.tm-react-bar {
+    display: flex;
+    gap: 4px;
+    background: #2a2a2a;
+    border: 1px solid #3d3d3d;
+    border-radius: 16px;
+    padding: 4px 6px;
+    margin-top: 4px;
+    align-self: flex-start;
+}
+.tm-react-emoji {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+.tm-react-emoji:hover { background: #3d3d3d; }
+.tm-msg-meta { font-size: 11px; color: #9a9a9a; margin-bottom: 2px; }
+.tm-msg-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 4px;
+    opacity: 0.85;
+}
+.tm-link-btn {
+    background: none;
+    border: none;
+    color: #b4b4ff;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 2px 4px;
+}
+.tm-link-btn:hover { text-decoration: underline; }
+.tm-edit-box { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.tm-edit-box input {
+    flex: 1;
+    min-width: 200px;
+    background: #1f1f1f;
+    border: 1px solid #5b5fc7;
+    border-radius: 4px;
+    color: #e0e0e0;
+    padding: 6px 8px;
+}
+.tm-muted { color: #8a8a8a; font-size: 12px; }
+.tm-post-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.tm-post-title { font-weight: 600; margin-bottom: 4px; }
+.tm-post-body { line-height: 1.45; }
+.tm-thread-panel {
+    margin: 12px 0 0 40px;
+    border-left: 2px solid #5b5fc7;
+    padding: 10px 12px;
+    background: #222;
+    border-radius: 6px;
+}
+.tm-thread-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.tm-thread-reply { padding: 6px 0; border-bottom: 1px solid #2c2c2c; font-size: 13px; }
+.tm-thread-compose { display: flex; gap: 6px; margin-top: 8px; }
+.tm-thread-compose input {
+    flex: 1;
+    background: #1a1a1a;
+    border: 1px solid #3d3d3d;
+    border-radius: 4px;
+    color: #e0e0e0;
+    padding: 6px 8px;
+}
+.tm-saved-list, .tm-shared-list { display: flex; flex-direction: column; gap: 8px; padding: 8px 0; }
+.tm-saved-item, .tm-shared-item {
+    background: #242424;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 10px 12px;
+}
+.tm-saved-meta { font-size: 11px; color: #9a9a9a; margin-bottom: 4px; }
+.tm-shared-head { display: flex; justify-content: space-between; align-items: center; }
+.tm-search-overlay { top: 60px; left: 50%; transform: translateX(-50%); width: 420px; }
+.tm-search-overlay input {
+    width: 100%;
+    box-sizing: border-box;
+    background: #1a1a1a;
+    border: 1px solid #5b5fc7;
+    border-radius: 4px;
+    color: #e0e0e0;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+}
+.tm-search-results { max-height: 260px; overflow-y: auto; }
+.tm-search-hit { padding: 6px 4px; border-bottom: 1px solid #333; font-size: 13px; }
+.tm-panel-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.tm-member-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid #2c2c2c;
+    font-size: 13px;
+}
+.tm-chat-item.unread { font-weight: 700; }
+.tm-ctrl-btn.active { background: #3d3d5c; }
+.tm-video-placeholder { cursor: pointer; }
+
+/* Spodní psací pole + Rozšířený editor (Screen 07 vs Screen 08) */
+.tm-composer-wrap { padding: 12px 28px 18px; }
+.tm-composer-box {
+    background: #292929;
+    border: 1px solid #3d3d3d;
+    border-radius: 8px;
+    padding: 8px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.tm-composer-box.expanded { border-bottom: 2px solid #7f85f5; }
+.tm-format-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #383838;
+    color: #d1d1d1;
+    font-size: 13px;
+}
+.tm-format-toolbar span { cursor: pointer; padding: 2px 5px; border-radius: 3px; }
+.tm-format-toolbar span:hover { background: #3d3d3d; }
+.tm-composer-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.tm-composer-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: white;
+    outline: none;
+    font-size: 13px;
+    padding: 4px 0;
+}
+.tm-composer-tools { display: flex; align-items: center; gap: 10px; color: #adadad; font-size: 14px; }
+.tm-composer-tools span { cursor: pointer; }
+.tm-composer-tools span:hover { color: white; }
+
+/* --- 4. KONTEXTOVÉ MENU NA PRAVÉ TLAČÍTKO MYŠI / TŘI TEČKY (Screen 14, 15) --- */
+.tm-ctx-popup {
+    position: fixed;
+    background: #292929;
+    border: 1px solid #444444;
+    border-radius: 8px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.7);
+    width: 235px;
+    padding: 6px 0;
+    z-index: 2000;
+}
+.tm-ctx-item {
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #e0e0e0;
+    cursor: pointer;
+    font-size: 12.5px;
+}
+.tm-ctx-item:hover { background: #383838; color: white; }
+.tm-ctx-divider { height: 1px; background: #383838; margin: 4px 0; }
+
+/* --- 5. KALENDÁŘ A PLÁNOVAČ SCHŮZEK (Screen 03, 04, 05, 06) --- */
+.tm-cal-grid-wrap { flex: 1; display: flex; flex-direction: column; background: #1f1f1f; overflow: hidden; }
+.tm-cal-toolbar {
+    height: 48px;
+    padding: 0 18px;
+    border-bottom: 1px solid #2b2b2b;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.tm-cal-week {
+    display: grid;
+    grid-template-columns: 50px repeat(5, 1fr);
+    flex: 1;
+    overflow-y: auto;
+}
+.tm-cal-day-head {
+    padding: 10px;
+    border-bottom: 1px solid #2b2b2b;
+    border-left: 1px solid #2b2b2b;
+    font-size: 13px;
+}
+.tm-cal-day-head.today { color: #7f85f5; font-weight: 700; border-top: 3px solid #7f85f5; }
+.tm-cal-slot {
+    height: 46px;
+    border-bottom: 1px solid #262626;
+    border-left: 1px solid #262626;
+    position: relative;
+    cursor: pointer;
+}
+.tm-cal-slot:hover { background: rgba(127, 133, 245, 0.08); }
+.tm-cal-event {
+    background: #383966;
+    border-left: 3px solid #7f85f5;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11.5px;
+    margin: 2px;
+    cursor: pointer;
+}
+.tm-cal-event:hover { filter: brightness(1.2); }
+
+/* Modální okna v Teams (Nová událost, Okamžitá schůzka, Aktivní schůzka) */
+.tm-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 300;
+}
+.tm-event-modal {
+    width: 860px;
+    max-width: 94%;
+    height: 510px;
+    background: #1f1f1f;
+    border: 1px solid #3d3d3d;
+    border-radius: 10px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.tm-event-top {
+    padding: 10px 18px;
+    background: #141414;
+    border-bottom: 1px solid #2b2b2b;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.tm-event-body { display: flex; flex: 1; overflow: hidden; }
+.tm-event-form { flex: 1; padding: 18px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
+.tm-input-line {
+    background: #292929;
+    border: none;
+    border-bottom: 2px solid #3d3d3d;
+    padding: 9px 12px;
+    color: white;
+    border-radius: 4px 4px 0 0;
+    font-size: 13px;
+    outline: none;
+}
+.tm-input-line:focus { border-bottom-color: #7f85f5; }
+
+/* Plánovač dostupnosti (Screen 06) */
+.tm-scheduler-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12px; }
+.tm-scheduler-table th, .tm-scheduler-table td { border: 1px solid #333; padding: 8px; text-align: left; }
+.tm-slot-busy { background: #a4262c; color: white; text-align: center; }
+.tm-slot-free { background: rgba(127, 133, 245, 0.2); border: 2px dashed #7f85f5 !important; cursor: pointer; text-align: center; }
+.tm-slot-free.selected { background: #5b5fc7; color: white; font-weight: 700; }
+
+/* --- 6. OBRAZOVKA ONLINE SCHŮZKY (Screen 10, 11, 12, 13) --- */
+.tm-meeting-stage {
+    position: absolute;
+    inset: 0;
+    background: #141414;
+    z-index: 400;
+    display: flex;
+    flex-direction: column;
+}
+.tm-meeting-bar {
+    height: 54px;
+    background: #1f1f1f;
+    border-bottom: 1px solid #2b2b2b;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.tm-meeting-controls { display: flex; align-items: center; gap: 14px; }
+.tm-ctrl-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: #e0e0e0;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 11px;
+    gap: 2px;
+}
+.tm-ctrl-btn:hover, .tm-ctrl-btn.active { background: #292929; border-color: #444; color: #7f85f5; }
+.tm-btn-leave { background: #c4314b; color: white; border: none; padding: 7px 14px; border-radius: 6px; font-weight: 700; cursor: pointer; }
+
+.tm-meeting-video {
+    flex: 1;
+    margin: 16px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #0f172a 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border: 1px solid #333;
+}
+/* Rozbalovací panel Více ••• a Sdílet ve schůzce (Screen 12, 13) */
+.tm-meeting-dropdown {
+    position: absolute;
+    top: 58px;
+    right: 120px;
+    width: 310px;
+    background: #242424;
+    border: 1px solid #3d3d3d;
+    border-radius: 8px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75);
+    padding: 14px;
+    z-index: 450;
+}
+.tm-more-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.tm-more-tile {
+    background: #2f2f2f;
+    border: 1px solid #3d3d3d;
+    border-radius: 6px;
+    padding: 10px 6px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 11.5px;
+}
+.tm-more-tile:hover { border-color: #7f85f5; background: #383966; }
+.tm-ppt-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+.tm-ppt-item:hover { background: #333333; color: #7f85f5; }

@@ -1,0 +1,348 @@
+/**
+ * ============================================================================
+ * PIXEL-PERFECT STYL MODULU MICROSOFT ONENOTE (onenote.css)
+ * Věrný vzhled desktopové aplikace OneNote (fialový motiv Office)
+ * ============================================================================
+ */
+
+.no-app {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    background-color: #f3f2f1;
+    color: #201f1e;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    font-size: 12px;
+    line-height: 1.35;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.no-app * { box-sizing: border-box; }
+
+/* --- 1. FIALOVÝ TITLEBAR --- */
+.no-titlebar {
+    height: 38px;
+    background-color: #7719aa;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    flex-shrink: 0;
+}
+.no-titlebar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+}
+.no-search-box {
+    width: 320px;
+    max-width: 35vw;
+    height: 26px;
+    background-color: #ffffff;
+    border-radius: 4px;
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #605e5c;
+}
+.no-search-box input {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    font-size: 12px;
+    color: #201f1e;
+}
+.no-titlebar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.no-sticky-pill {
+    background: #ffffff;
+    color: #323130;
+    border: none;
+    border-radius: 3px;
+    padding: 3px 8px;
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+.no-share-pill {
+    background: #5b5fc7;
+    color: #ffffff;
+    border: none;
+    border-radius: 3px;
+    padding: 3px 10px;
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* --- 2. PÁS KARET (RIBBON KARTY A NÁSTROJE) --- */
+.no-menubar {
+    height: 30px;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    border-bottom: 1px solid #edebe9;
+    flex-shrink: 0;
+    gap: 2px;
+}
+.no-menu-tab {
+    padding: 0 10px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #323130;
+    font-size: 12px;
+    border-bottom: 2px solid transparent;
+}
+.no-menu-tab:hover { background-color: #f3f2f1; }
+.no-menu-tab.active {
+    color: #7719aa;
+    font-weight: 600;
+    border-bottom-color: #7719aa;
+}
+
+.no-ribbon {
+    height: 80px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #d2d0ce;
+    padding: 4px 10px;
+    display: flex;
+    align-items: stretch;
+    gap: 4px;
+    flex-shrink: 0;
+    overflow-x: auto;
+}
+.no-rgroup {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0 8px 0 4px;
+    border-right: 1px solid #edebe9;
+}
+.no-rgroup:last-child { border-right: none; }
+.no-rgroup-content {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex: 1;
+}
+.no-rgroup-title {
+    text-align: center;
+    font-size: 10px;
+    color: #605e5c;
+}
+.no-rbtn-lg {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    padding: 3px 6px;
+    min-width: 46px;
+    height: 56px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    color: #323130;
+    font-size: 11px;
+    line-height: 1.15;
+    text-align: center;
+}
+.no-rbtn-lg:hover { background-color: #f3f2f1; border-color: #e1dfdd; }
+.no-rbtn-lg svg { width: 20px; height: 20px; margin-bottom: 3px; }
+
+/* --- 3. PRACOVNÍ PLOCHA (BLOKY, ODDÍLY, STRÁNKY) --- */
+.no-workspace {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    background: #ffffff;
+}
+
+/* 3A. Panel oddílů (Sections) a poznámkových bloků vlevo */
+.no-notebook-pane {
+    width: 220px;
+    background-color: #f3f2f1;
+    border-right: 1px solid #d2d0ce;
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0;
+    flex-shrink: 0;
+    overflow-y: auto;
+}
+.no-nb-header {
+    padding: 6px 12px;
+    font-weight: 600;
+    color: #201f1e;
+    font-size: 12.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    border-bottom: 1px solid #e1dfdd;
+    margin-bottom: 6px;
+}
+.no-section-tab {
+    padding: 6px 12px 6px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    color: #323130;
+    border-left: 4px solid transparent;
+    margin-bottom: 1px;
+}
+.no-section-tab:hover { background-color: #e1dfdd; }
+.no-section-tab.active {
+    background-color: #ffffff;
+    font-weight: 600;
+    border-left-color: #107c10;
+}
+.no-section-color {
+    width: 8px;
+    height: 16px;
+    border-radius: 1px;
+}
+
+/* 3B. Seznam stránek (Pages list) */
+.no-pages-pane {
+    width: 195px;
+    background-color: #faf9f8;
+    border-right: 1px solid #edebe9;
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    flex-shrink: 0;
+    overflow-y: auto;
+}
+.no-page-card {
+    padding: 8px 10px;
+    background: #ffffff;
+    border-radius: 4px;
+    margin-bottom: 4px;
+    cursor: pointer;
+    border: 1px solid #e1dfdd;
+}
+.no-page-card:hover { background: #f3f2f1; }
+.no-page-card.active {
+    background: #ffffff;
+    border-color: #7719aa;
+    font-weight: 600;
+}
+
+/* 3C. Hlavní plátno poznámek (Canvas) */
+.no-canvas {
+    flex: 1;
+    background-color: #ffffff;
+    padding: 24px 36px;
+    overflow-y: auto;
+    position: relative;
+}
+.no-canvas-header {
+    border-bottom: 1px solid #edebe9;
+    padding-bottom: 10px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #605e5c;
+    font-size: 11.5px;
+}
+
+/* --- 4. BACKSTAGE MENU "SOUBOR" (Screen 02) --- */
+.no-backstage {
+    position: absolute;
+    inset: 0;
+    background: #ffffff;
+    z-index: 500;
+    display: flex;
+}
+.no-bs-sidebar {
+    width: 180px;
+    background: #f3f2f1;
+    border-right: 1px solid #d2d0ce;
+    padding: 12px 0;
+    display: flex;
+    flex-direction: column;
+}
+.no-bs-back {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid #323130;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 4px 0 14px 16px;
+    cursor: pointer;
+}
+.no-bs-item {
+    padding: 9px 18px;
+    font-size: 12.5px;
+    cursor: pointer;
+}
+.no-bs-item:hover { background: #e1dfdd; }
+.no-bs-item.active {
+    background: #ffffff;
+    font-weight: 600;
+    color: #7719aa;
+    border-left: 4px solid #7719aa;
+}
+.no-bs-content {
+    flex: 1;
+    padding: 28px 40px;
+    overflow-y: auto;
+}
+
+/* --- 5. KONTEXTOVÁ A KONTEXTOVÁ MENU --- */
+.no-ctx-menu {
+    position: fixed;
+    background: #ffffff;
+    border: 1px solid #c8c6c4;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    width: 250px;
+    padding: 4px 0;
+    z-index: 3000;
+    font-size: 12px;
+}
+.no-ctx-row {
+    padding: 6px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+.no-ctx-row:hover { background: #edebe9; }
+.no-ctx-sep { height: 1px; background: #edebe9; margin: 3px 0; }
+.no-ctx-row { white-space: nowrap; }
+.no-app button,
+.no-app .no-menu-tab,
+.no-app .no-bs-item,
+.no-app .no-ctx-row,
+.no-app .no-search-box,
+.no-app [data-no-section],
+.no-app [data-no-page] { cursor: pointer; }
+.no-bs-sidebar { overflow-y: auto; }
+.no-search-box input { pointer-events: none; }
+.no-search-box > .no-ctx-menu { z-index: 3000; }

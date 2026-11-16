@@ -1,0 +1,223 @@
+/**
+ * ============================================================================
+ * STYL MODULU MICROSOFT FORMS (forms.css)
+ * ============================================================================
+ */
+.fm-app {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 100%;
+    background-color: #f3f2f1;
+    color: #242424;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 13px;
+    position: relative;
+    overflow: hidden;
+}
+
+.fm-header {
+    height: 48px;
+    background-color: #0f766e;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    flex-shrink: 0;
+}
+.fm-header-left { display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 15px; cursor: pointer; }
+.fm-header-right { display: flex; align-items: center; gap: 16px; }
+.fm-btn-header {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 6px;
+}
+.fm-btn-header:hover { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
+.fm-btn-share {
+    background: #115e59;
+    color: white;
+    border: 1px solid #134e4a;
+    padding: 6px 16px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.fm-btn-share:hover { background: #134e4a; }
+
+.fm-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    background-color: #f3f2f1;
+    position: relative;
+}
+
+/* Pohled: Domovská obrazovka */
+.fm-home { padding: 30px 40px; max-width: 1000px; margin: 0 auto; width: 100%; }
+.fm-home-title { font-size: 22px; font-weight: 600; margin-bottom: 20px; }
+.fm-templates { display: flex; gap: 16px; margin-bottom: 30px; }
+.fm-template-card {
+    background: white;
+    border: 1px solid #e1dfdd;
+    border-radius: 6px;
+    width: 180px;
+    height: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    gap: 12px;
+    transition: box-shadow 0.2s;
+}
+.fm-template-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: #0f766e; }
+
+.fm-home-item {
+    background: white;
+    border: 1px solid #e1dfdd;
+    border-radius: 6px;
+    padding: 16px 20px;
+    max-width: 420px;
+    cursor: pointer;
+}
+.fm-home-item:hover { border-color: #0f766e; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+/* Náhled formuláře z editoru */
+.fm-preview-bar {
+    background: #134e4a;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    flex-shrink: 0;
+}
+
+/* Pohled: Editor / Respondent */
+.fm-editor-bg {
+    background: linear-gradient(135deg, #dcfce7 0%, #ccfbf1 100%);
+    min-height: 100%;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+}
+.fm-form-container {
+    background: white;
+    width: 100%;
+    max-width: 760px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 0;
+    overflow: hidden;
+}
+.fm-form-header-img {
+    height: 120px;
+    background: #0f766e;
+    color: white;
+    display: flex;
+    align-items: flex-end;
+    padding: 24px 32px;
+}
+.fm-form-title { font-size: 28px; font-weight: 700; margin: 0; outline: none; }
+.fm-form-desc { padding: 16px 32px; font-size: 14px; color: #605e5c; outline: none; border-bottom: 1px solid #edebe9; }
+
+.fm-question { padding: 24px 32px; border-bottom: 1px solid #edebe9; }
+.fm-q-title { font-size: 15px; font-weight: 600; margin-bottom: 12px; display: flex; gap: 8px; }
+.fm-q-option { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.fm-q-option input[type="radio"] { width: 18px; height: 18px; accent-color: #0f766e; }
+.fm-question { cursor: context-menu; }
+.fm-q-option-clickable { cursor: pointer; }
+.fm-q-option-clickable input[type="radio"] { cursor: pointer; }
+
+.fm-add-new-bar { background: #f8f9fa; padding: 16px 32px; text-align: center; }
+.fm-btn-add {
+    background: white;
+    border: 1px solid #0f766e;
+    color: #0f766e;
+    padding: 8px 24px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.fm-btn-add:hover { background: #f0fdf4; }
+.fm-quick-start {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+.fm-qs-btn {
+    background: white;
+    border: 1px solid #e1dfdd;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    cursor: pointer;
+}
+.fm-qs-btn:hover { border-color: #0f766e; color: #0f766e; }
+
+/* Pravý panel Nastavení */
+.fm-settings-panel {
+    position: absolute;
+    right: 0;
+    top: 48px;
+    bottom: 0;
+    width: 320px;
+    background: white;
+    box-shadow: -4px 0 16px rgba(0,0,0,0.1);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+}
+.fm-settings-top { padding: 16px; border-bottom: 1px solid #edebe9; display: flex; justify-content: space-between; font-weight: 600; font-size: 16px; }
+.fm-settings-body { padding: 16px; overflow-y: auto; flex: 1; }
+.fm-settings-group { margin-bottom: 20px; }
+.fm-settings-group strong { display: block; margin-bottom: 10px; color: #323130; }
+.fm-settings-label { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; cursor: pointer; color: #323130; }
+
+/* Modál Shromažďovat odpovědi */
+.fm-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.fm-share-modal {
+    background: white;
+    border-radius: 8px;
+    width: 500px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+    padding: 24px;
+}
+.fm-share-title { font-size: 18px; font-weight: 600; margin-bottom: 16px; display: flex; justify-content: space-between; }
+.fm-share-link-box { display: flex; gap: 8px; margin-bottom: 20px; }
+.fm-share-link-box input { flex: 1; padding: 8px; border: 1px solid #8a8886; border-radius: 4px; }
+.fm-share-link-box button { background: #0f766e; color: white; border: none; padding: 0 16px; border-radius: 4px; cursor: pointer; font-weight: 600; }
+.fm-share-methods { display: flex; gap: 16px; justify-content: center; margin-top: 24px; }
+.fm-share-icon { width: 48px; height: 48px; border-radius: 50%; background: #f3f2f1; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; }
+.fm-share-icon:hover { background: #e1dfdd; }
+.fm-share-send { display: flex; justify-content: flex-end; margin-top: 24px; }
+.fm-share-send button { cursor: pointer; }
+
+/* Kontextové menu otázky (pravé tlačítko) */
+.fm-ctx-menu {
+    position: fixed;
+    background: white;
+    border: 1px solid #e1dfdd;
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    min-width: 200px;
+    padding: 4px 0;
+    z-index: 300;
+}
+.fm-ctx-item { padding: 8px 16px; cursor: pointer; color: #323130; }
+.fm-ctx-item:hover { background: #f3f2f1; }

@@ -1,0 +1,437 @@
+/* ============================================================================
+   MICROSOFT TO DO – sandbox modul (todo.css), prefix td-
+   ============================================================================ */
+
+.td-app {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 520px;
+    background: #faf9f8;
+    color: #201f1e;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    overflow: hidden;
+}
+
+/* Horní modrá lišta */
+.td-topbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    height: 48px;
+    padding: 0 14px;
+    background: #0078d4;
+    color: #fff;
+    flex-shrink: 0;
+}
+.td-brand { font-weight: 600; font-size: 15px; min-width: 110px; }
+.td-search {
+    flex: 0 1 420px;
+    margin: 0 auto;
+    padding: 6px 12px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.18);
+    color: #e6f1fb;
+}
+.td-top-icons { display: flex; align-items: center; gap: 14px; font-size: 16px; }
+.td-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #5c2d91;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.td-body {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+}
+
+/* Levý panel */
+.td-sidebar {
+    width: clamp(180px, 22%, 250px);
+    flex-shrink: 1;
+    min-width: 0;
+    background: #f3f2f1;
+    border-right: 1px solid #e1dfdd;
+    padding: 8px 0;
+    overflow-y: auto;
+}
+.td-side-top {
+    display: flex;
+    gap: 18px;
+    padding: 4px 16px 10px;
+    font-size: 16px;
+    color: #424242;
+}
+.td-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 7px 16px;
+    border: none;
+    background: transparent;
+    text-align: left;
+    color: #201f1e;
+    cursor: pointer;
+    font: inherit;
+}
+.td-nav-item:hover { background: #e8e6e4; }
+.td-nav-item.active { background: #e1efff; color: #0078d4; font-weight: 600; box-shadow: inset 3px 0 0 #0078d4; }
+.td-nav-ic { width: 20px; text-align: center; color: #0078d4; }
+.td-nav-label { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.td-nav-count { color: #605e5c; font-size: 12px; }
+.td-section-head {
+    padding: 14px 16px 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #605e5c;
+}
+.td-new-list { color: #0078d4; margin-top: 6px; }
+
+/* Hlavní plocha */
+.td-main {
+    flex: 1 1 0;
+    min-width: 260px;
+    display: flex;
+    flex-direction: column;
+    padding: 14px 24px;
+    overflow-y: auto;
+    position: relative;
+}
+.td-main-head { margin-bottom: 8px; }
+.td-title-row { display: flex; align-items: center; gap: 10px; }
+.td-title { margin: 0; font-size: 24px; font-weight: 600; color: #201f1e; }
+.td-icon-btn, .td-share-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #605e5c;
+    font: inherit;
+}
+.td-icon-btn { font-size: 18px; padding: 2px 6px; }
+.td-share-btn {
+    margin-left: auto;
+    padding: 5px 12px;
+    border: 1px solid #c8c6c4;
+    border-radius: 4px;
+    background: #fff;
+    color: #201f1e;
+}
+.td-share-btn:hover { background: #f3f2f1; }
+.td-tabs-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 6px;
+    border-bottom: 1px solid #e1dfdd;
+}
+.td-tabs { display: flex; gap: 4px; }
+.td-tab {
+    padding: 8px 12px;
+    border: none;
+    background: transparent;
+    color: #605e5c;
+    cursor: pointer;
+    font: inherit;
+    border-bottom: 2px solid transparent;
+}
+.td-tab.active { color: #0078d4; font-weight: 600; border-bottom-color: #0078d4; }
+.td-sort { display: flex; gap: 12px; }
+.td-sort-btn { border: none; background: transparent; color: #605e5c; cursor: pointer; font: inherit; }
+
+/* Přidávací lišta */
+.td-add-bar {
+    margin: 14px 0 12px;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+    padding: 8px 12px;
+}
+.td-add-row { display: flex; align-items: center; gap: 10px; }
+.td-add-circle { color: #0078d4; font-size: 18px; }
+.td-add-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font: inherit;
+    font-size: 15px;
+    padding: 6px 0;
+    background: transparent;
+}
+.td-add-btn {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 4px;
+    background: #0078d4;
+    color: #fff;
+    cursor: pointer;
+    font: inherit;
+}
+.td-add-btn:disabled { background: #edebe9; color: #a19f9d; cursor: default; }
+.td-add-tools { display: flex; gap: 6px; margin-top: 6px; padding-left: 28px; }
+.td-tool {
+    padding: 4px 8px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    color: #424242;
+}
+.td-tool:hover { background: #f3f2f1; }
+.td-tool.on { color: #0078d4; border-color: #c7e0f4; background: #eff6fc; }
+.td-tool small { font-size: 11px; }
+
+/* Úkoly */
+.td-tasks { display: flex; flex-direction: column; gap: 6px; }
+.td-layout-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+.td-layout-grid .td-task { flex-wrap: wrap; }
+.td-task {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    user-select: none;
+}
+.td-task:hover { box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); }
+.td-task.td-selected { outline: 2px solid #0078d4; }
+.td-task.td-done .td-task-title { text-decoration: line-through; color: #8a8886; }
+.td-check {
+    border: none;
+    background: transparent;
+    font-size: 18px;
+    color: #0078d4;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+.td-task-main { flex: 1; min-width: 0; }
+.td-task-title { font-size: 14px; color: #201f1e; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.td-task-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; font-size: 12px; color: #605e5c; }
+.td-due { color: #605e5c; }
+.td-due.td-overdue { color: #c50f1f; font-weight: 600; }
+.td-meta { white-space: nowrap; }
+.td-star { border: none; background: transparent; font-size: 18px; color: #8a8886; cursor: pointer; padding: 0; }
+.td-star.on { color: #0078d4; }
+.td-group-head { margin: 10px 0 4px; font-weight: 600; color: #424242; font-size: 13px; }
+.td-group-head span { color: #8a8886; font-weight: 400; }
+.td-done-section { margin-top: 14px; }
+.td-done-head { padding: 6px 0; cursor: pointer; color: #605e5c; font-weight: 600; }
+.td-empty { padding: 24px; text-align: center; color: #605e5c; background: #fff; border-radius: 6px; }
+
+/* E-maily s příznakem */
+.td-email { cursor: default; }
+.td-flag { color: #c50f1f; }
+.td-tiny-btn {
+    padding: 4px 10px;
+    border: 1px solid #c8c6c4;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+    color: #0078d4;
+}
+
+/* Pravý panel – návrhy */
+.td-right {
+    width: clamp(220px, 26%, 270px);
+    flex-shrink: 0;
+    min-width: 0;
+    background: #fff;
+    border-left: 1px solid #e1dfdd;
+    padding: 14px;
+    overflow-y: auto;
+}
+.td-right-head { font-weight: 600; margin: 8px 0; color: #201f1e; }
+.td-sugg {
+    position: relative;
+    padding: 10px 40px 10px 12px;
+    margin-bottom: 8px;
+    border: 1px solid #e1dfdd;
+    border-radius: 6px;
+}
+.td-sugg-src { font-size: 12px; color: #605e5c; }
+.td-sugg-text { margin-top: 4px; font-size: 13px; }
+.td-sugg-add {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    width: 26px;
+    height: 26px;
+    border: 1px solid #0078d4;
+    border-radius: 50%;
+    background: #fff;
+    color: #0078d4;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 1;
+}
+.td-recent { padding: 6px 0; border-bottom: 1px solid #f3f2f1; color: #424242; }
+
+/* Detail úkolu */
+.td-detail {
+    width: clamp(230px, 28%, 300px);
+    flex-shrink: 0;
+    min-width: 0;
+    background: #fff;
+    border-left: 1px solid #e1dfdd;
+    padding: 14px;
+    overflow-y: auto;
+}
+.td-detail-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.td-detail-title { flex: 1; font-weight: 600; font-size: 15px; }
+.td-detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 9px 8px;
+    border-bottom: 1px solid #f3f2f1;
+    cursor: pointer;
+    color: #201f1e;
+}
+.td-detail-row:hover { background: #f3f2f1; }
+.td-detail-row span { color: #605e5c; font-size: 12px; }
+.td-detail-section { margin: 14px 0 6px; font-weight: 600; font-size: 12px; color: #605e5c; text-transform: uppercase; }
+.td-detail-file { padding: 4px 0; font-size: 13px; }
+.td-detail-btn {
+    display: block;
+    width: 100%;
+    margin-top: 8px;
+    padding: 7px 10px;
+    border: 1px solid #c8c6c4;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+}
+.td-detail-btn:hover { background: #f3f2f1; }
+.td-detail-btn.td-danger { color: #c50f1f; border-color: #f1bbbc; }
+.td-note {
+    width: 100%;
+    min-height: 60px;
+    box-sizing: border-box;
+    padding: 8px;
+    border: 1px solid #c8c6c4;
+    border-radius: 4px;
+    font: inherit;
+    resize: vertical;
+}
+
+/* Překryvy */
+.td-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.08); z-index: 900; }
+.td-popover {
+    position: fixed;
+    top: 150px;
+    left: 50%;
+    transform: translateX(-20%);
+    width: 240px;
+    padding: 8px 0;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    z-index: 910;
+}
+.td-pop-head { padding: 8px 14px; font-weight: 600; border-bottom: 1px solid #edebe9; }
+.td-pop-item {
+    display: block;
+    width: 100%;
+    padding: 8px 14px;
+    border: none;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    font: inherit;
+}
+.td-pop-item:hover { background: #f3f2f1; }
+.td-pop-sep { height: 1px; background: #edebe9; margin: 4px 0; }
+
+.td-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 360px;
+    padding: 16px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
+    z-index: 910;
+}
+.td-modal-head { display: flex; justify-content: space-between; align-items: center; font-weight: 600; margin-bottom: 12px; }
+.td-x { border: none; background: transparent; cursor: pointer; font-size: 14px; }
+.td-label { display: block; margin: 8px 0 4px; font-size: 13px; color: #424242; }
+.td-input, .td-select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 7px 8px;
+    border: 1px solid #8a8886;
+    border-radius: 4px;
+    font: inherit;
+}
+.td-modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+.td-btn-primary, .td-btn-secondary {
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font: inherit;
+}
+.td-btn-primary { border: none; background: #0078d4; color: #fff; }
+.td-btn-secondary { border: 1px solid #c8c6c4; background: #fff; color: #201f1e; }
+.td-file-btn {
+    display: block;
+    width: 100%;
+    margin-bottom: 6px;
+    padding: 8px 10px;
+    border: 1px solid #e1dfdd;
+    border-radius: 4px;
+    background: #fff;
+    text-align: left;
+    cursor: pointer;
+    font: inherit;
+}
+.td-file-btn:hover { background: #eff6fc; }
+
+/* Kontextové menu */
+.td-ctx {
+    position: fixed;
+    min-width: 260px;
+    padding: 6px 0;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    z-index: 950;
+}
+.td-ctx-item {
+    padding: 7px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.td-ctx-item:hover { background: #f3f2f1; }
+.td-ctx-item.td-has-sub { position: relative; }
+.td-ctx-danger { color: #c50f1f; }
+.td-ctx-sep { height: 1px; background: #edebe9; margin: 4px 0; }
+.td-ctx-sub {
+    margin: 0 0 4px 16px;
+    padding: 4px 0;
+    border-left: 2px solid #edebe9;
+    max-height: 180px;
+    overflow-y: auto;
+}
+.td-ctx-sub .td-ctx-item { padding-left: 12px; }
