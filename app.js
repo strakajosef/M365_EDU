@@ -21,11 +21,13 @@ const MODERATOR_IMAGES = {
 };
 
 const appState = {
+    solvedFreeMissionIds: new Set(), // Splněné úkoly volného tréninku (jen pro aktuální relaci)
     userLevel: 0, // 0 = Základní, 1 = Pokročilý, 2 = Specialista, 3 = Expert
     score: 0,
     answeredCount: 0,
     maxQuestions: GAME_DATA.config.maxQuestionsPerGame,
     wrongTopics: [],
+    learningMissions: [],
     playedMissionIds: [],
 
     activeMission: null,
@@ -75,6 +77,7 @@ const dom = {
     finalScoreValue: document.getElementById("final-score-value"),
     evaluationRecommendations: document.getElementById("evaluation-recommendations"),
     btnPlayAgain: document.getElementById("btn-play-again"),
+    btnLearnWrong: document.getElementById("btn-learn-wrong"),
     btnEvalToMenu: document.getElementById("btn-eval-to-menu")
 };
 
@@ -134,6 +137,10 @@ document.addEventListener("DOMContentLoaded", () => {
     dom.btnPlayAgain.addEventListener("click", () => {
         dom.modalEvaluation.classList.add("hidden");
         appState.activeGame?.start();
+    });
+
+    dom.btnLearnWrong.addEventListener("click", () => {
+        startLearningMode();
     });
 
     dom.btnEvalToMenu.addEventListener("click", () => {
@@ -388,7 +395,8 @@ function mountSandboxModule(appModuleName, mission) {
                     handleSandboxMistake(reasonText);
                 }
             },
-            onInfo: (infoText) => showSandboxToast(infoText, "#0078D4")
+            onInfo: (infoText) => showSandboxToast(infoText, "#0078D4"),
+            isMissionSolved: (missionId) => appState.solvedFreeMissionIds.has(missionId)
         });
     } else {
         console.error("Modul nenalezen:", appModuleName);
@@ -412,6 +420,7 @@ function verifySandboxAction(payload) {
 
     if (isMatch) {
         if (appState.isFreeTraining) {
+            appState.solvedFreeMissionIds.add(appState.activeMission.id);
             setModeratorQuote("correctAnswer");
             setModeratorAvatar("happy", 5000);
             showSandboxToast("🎉 Skvělá práce! Úkol v tréninkovém režimu jsi splnil(a). Můžeš si nahoře přepnout další úkol nebo aplikaci dál zkoumat.", "#10B981");
@@ -493,8 +502,66 @@ function recordMistakeTopic(mission) {
     const cat = GAME_DATA.categories.find(c => c.id === mission.categoryId);
     appState.wrongTopics.push({
         categoryName: cat ? cat.name : mission.categoryId,
-        topic: mission.topic
+        topic: mission.topic,
+        mission
     });
+}
+
+/** Unikátní chybně vyřešené úkoly aktuální hry (podklad pro režim učení). */
+function getLearningMissions() {
+    const unique = [];
+    appState.wrongTopics.forEach(item => {
+        if (!unique.some(m => m.id === item.mission.id)) unique.push(item.mission);
+    });
+    return unique;
+}
+
+/** Spustí režim učení: tréninkový režim pouze s úkoly, ve kterých uživatel chyboval. */
+function startLearningMode() {
+    const missions = getLearningMissions();
+    if (!missions.length) return;
+
+    dom.modalEvaluation.classList.add("hidden");
+    appState.activeGame = null;
+    appState.isFreeTraining = true;
+    appState.learningMissions = missions;
+    openLearningMission(missions[0].id);
+}
+
+function openLearningMission(missionId) {
+    const mission = appState.learningMissions.find(m => m.id === missionId) || appState.learningMissions[0];
+
+    appState.activeMission = mission;
+    loadModuleStylesheet(mission.appModule);
+    showScreen("sandbox");
+
+    setModeratorQuote("freeTraining");
+    setModeratorAvatar("ques");
+
+    dom.sandboxAppBadge.textContent = `${mission.appModule.toUpperCase()} (REŽIM UČENÍ)`;
+
+    const options = appState.learningMissions.map((m, idx) => `
+        <option value="${m.id}" ${m.id === mission.id ? "selected" : ""}>
+            ${idx + 1}. [${GAME_DATA.config.difficulties[m.difficulty]?.name}] ${m.topic}
+        </option>
+    `).join("");
+    dom.sandboxTopicTitle.innerHTML = `
+        Úkol k procvičení:
+        <select id="free-mission-switcher" style="padding:3px 8px; border-radius:6px; border:1px solid #cbd5e1; font-weight:600; font-family:inherit;">
+            ${options}
+        </select>
+    `;
+    document.getElementById("free-mission-switcher")?.addEventListener("change", (e) => {
+        openLearningMission(e.target.value);
+    });
+
+    dom.sandboxTaskDesc.textContent = mission.taskDescription;
+    dom.btnAbortSandbox.textContent = "Ukončit učení";
+    dom.sandboxHintWrapper?.classList.add("hidden");
+    dom.sandboxTimerBox.classList.add("hidden");
+    dom.sandboxLivesBox.classList.add("hidden");
+
+    mountSandboxModule(mission.appModule, mission);
 }
 
 /** Ukončí hru při vyčerpání 5 úkolů nebo když aktivní hra nemá další úkoly (force = vynucené ukončení). */
@@ -538,6 +605,7 @@ function checkGameEnd(force = false) {
             dom.evaluationRecommendations.innerHTML = `<ul>${uniqueItems.map(u => `<li>${u}</li>`).join("")}</ul>`;
         }
 
+        dom.btnLearnWrong.classList.toggle("hidden", errorCount === 0);
         dom.modalEvaluation.classList.remove("hidden");
     }
 }

@@ -14,8 +14,12 @@ window.SandboxModules.outlook = {
     init(container, mission, callbacks) {
         this.container = container;
         this.callbacks = callbacks;
+        this.mission = mission;
 
         this.state = {
+            helpOpen: false,
+            helpMissionId: null, // Úkol, jehož nápověda se zobrazuje (null = aktivní úkol)
+            helpShowHint: false,
             activeRail: "mail", // 'mail' | 'calendar'
             activeFolder: "Doručená pošta",
             favOpen: true,
@@ -24,6 +28,18 @@ window.SandboxModules.outlook = {
             collapsedGroups: [],
             mailFilter: "all", // 'all' | 'unread'
             selectedMailId: null, // Výchozí prázdný stav jako na Screenu 01
+            activeTab: "home", // 'home' | 'send' | 'folder' | 'view' | 'help'
+            expandedFolders: {}, // Rozbalené složky v levém panelu (název -> bool)
+            folderMails: {}, // Vygenerované e-maily ve složkách (naplní buildFolderMails)
+            todoList: "Úkoly",
+            todos: [
+                { id: 1, title: "Zkontrolovat ticket INC-88412", done: false, list: "Důležité" },
+                { id: 2, title: "Připravit podklady k reportu za září", done: false, list: "Můj den" },
+                { id: 3, title: "Potvrdit termín nasazení na testovací prostředí", done: false, list: "Plánované" },
+                { id: 4, title: "Dokončit školení práce s daty v Excelu", done: true, list: "Mám přiřazeno" },
+                { id: 5, title: "Odpovědět na e-mail od Evy Vzorové", done: false, list: "E-mail s příznakem" }
+            ],
+            copilotMessages: [],
 
             // Backstage menu "Soubor" (Screen 06, 13)
             backstageOpen: false,
@@ -46,6 +62,9 @@ window.SandboxModules.outlook = {
             roomBooked: null,
 
             composeWindowOpen: false,
+            composeAppsOpen: false,
+            composeTab: "message", // 'message' | 'insert' | 'options' | 'format' | 'review'
+            myTemplatesOpen: false,
             composeSubject: "Šablona",
             saveAsDialogOpen: false,
             saveAsFileName: "Šablona.msg",
@@ -71,10 +90,10 @@ window.SandboxModules.outlook = {
                 { name: "Transformace CRM", count: 0, sub: true },
                 { name: "WebDev", count: 0, sub: true },
                 { name: "PyAnalytics", count: 0, sub: true },
-                { name: "▾ ! Kampaně", count: 0, sub: true },
+                { name: "! Kampaně", count: 0, sub: true },
                 { name: "sprava_kampani", count: 0, sub: true },
                 { name: "Datový sklad", count: 0, sub: true },
-                { name: "▸ Bezpečnost", count: 0, sub: true },
+                { name: "Bezpečnost", count: 0, sub: true },
                 { name: "Reporting & BI", count: 0, sub: true },
                 { name: "Archiv projektů", count: 0, sub: true },
                 { name: "Fakturace_2026", count: 0, sub: true }
@@ -204,7 +223,406 @@ window.SandboxModules.outlook = {
             ]
         };
 
+        this.state.folderMails = this.buildFolderMails();
         this.render();
+    },
+
+    // Obsah záložek pásu karet (Složka, Posílání a příjem, Zobrazení, Nápověda)
+    ribbonTabs: {
+        send: [
+            { title: "Poslat a přijmout", buttons: [{ label: "Poslat a přijmout<br>ve všech složkách", icon: "🔄" }, { label: "Aktualizovat<br>složku", icon: "🔃" }, { label: "Poslat všechno", icon: "➤" }, { label: "Skupiny pro odeslání<br>a přijímání ▾", icon: "👥" }] },
+            { title: "Stáhnout", buttons: [{ label: "Zobrazit<br>průběh", icon: "📊" }, { label: "Zrušit vše", icon: "✖️" }] },
+            { title: "Server", buttons: [{ label: "Stáhnout<br>záhlaví", icon: "📥" }, { label: "Označit ke stažení ▾", icon: "🏷️" }, { label: "Zrušit označení<br>ke stažení ▾", icon: "🚫" }, { label: "Zpracovat označená<br>záhlaví ▾", icon: "📋" }] },
+            { title: "Předvolby", buttons: [{ label: "Předvolby<br>stahování ▾", icon: "⚙️" }, { label: "Pracovat<br>offline", icon: "📴" }] }
+        ],
+        folder: [
+            { title: "Nová", buttons: [{ label: "Nová<br>složka", icon: "📁" }, { label: "Nová složka<br>výsledků hledání", icon: "🔍" }] },
+            { title: "Akce", buttons: [{ label: "Přejmenovat<br>složku", icon: "✏️" }, { label: "Přesunout<br>složku", icon: "📂" }, { label: "Odstranit<br>složku", icon: "🗑️" }] },
+            { title: "Vyčistit", buttons: [{ label: "Označit vše<br>jako přečtené", icon: "✔️" }, { label: "Spustit<br>pravidla", icon: "⚡" }, { label: "Zobrazit všechny<br>složky od A do Z", icon: "🔤" }, { label: "Vyčistit<br>složku ▾", icon: "🧹" }, { label: "Odstranit vše", icon: "🗑️" }, { label: "Obnovit odstraněnou<br>poštu", icon: "↩️" }] },
+            { title: "Oblíbené", buttons: [{ label: "Přidat k<br>oblíbeným", icon: "⭐" }] },
+            { title: "Online zobrazení", buttons: [{ label: "Zobrazit<br>na serveru", icon: "🌐" }] },
+            { title: "Vlastnosti", buttons: [{ label: "Zásady", icon: "📜" }, { label: "Nastavení automatické<br>archivace", icon: "🗄️" }, { label: "Oprávnění<br>složky", icon: "🔐" }, { label: "Vlastnosti<br>složky", icon: "ℹ️" }] }
+        ],
+        view: [
+            { title: "Aktuální zobrazení", buttons: [{ label: "Změnit<br>zobrazení ▾", icon: "🔄" }, { label: "Nastavení<br>zobrazení", icon: "⚙️" }, { label: "Obnovit<br>zobrazení", icon: "↩️" }] },
+            { title: "Zprávy", buttons: [{ label: "Zobrazit jako konverzace", icon: "☑️" }, { label: "Nastavení konverzace ▾", icon: "⚙️" }] },
+            { title: "Prioritní doručená pošta", buttons: [{ label: "Zobrazit prioritní<br>doručenou poštu", icon: "📥" }] },
+            { title: "Uspořádání", buttons: [{ label: "Náhled<br>zprávy ▾", icon: "🗂️" }, { label: "Datum", icon: "📅" }, { label: "Od", icon: "👤" }, { label: "Komu", icon: "👥" }, { label: "Kategorie", icon: "🎨" }, { label: "Obrátit pořadí řazení", icon: "↕️" }, { label: "Přidat sloupce", icon: "➕" }, { label: "Rozbalit či sbalit ▾", icon: "➖" }] },
+            { title: "Rozložení", buttons: [{ label: "Zmenšit<br>mezery", icon: "↕️" }, { label: "Podokno<br>složek ▾", icon: "📂" }, { label: "Podokno<br>čtení ▾", icon: "📖" }, { label: "Panel<br>úkolů ▾", icon: "✔️" }] },
+            { title: "Okno", buttons: [{ label: "Okno<br>Připomínky", icon: "🔔" }, { label: "Otevřít v<br>novém okně", icon: "🪟" }, { label: "Zavřít všechny<br>položky", icon: "✖️" }] },
+            { title: "Asistivní čtečka", buttons: [{ label: "Asistivní<br>čtečka", icon: "🔊" }] }
+        ],
+        help: [
+            { title: "Pomoc", buttons: [{ label: "Nápověda", icon: "❓", id: "ol-help-open" }, { label: "Co chcete<br>udělat?", icon: "💡" }] },
+            { title: "Zpětná vazba", buttons: [{ label: "Odeslat<br>zpětnou vazbu", icon: "💬" }] },
+            { title: "Informace", buttons: [{ label: "Možnosti", icon: "⚙️", id: "ol-help-options" }, { label: "Vyzkoušet<br>nový Outlook", icon: "🆕" }] }
+        ]
+    },
+
+    // Vygeneruje 3–10 náhodných e-mailů pro každou složku. Seed je odvozen od názvu složky,
+    // takže se seznam při každém překreslení nezmění.
+    buildFolderMails() {
+        const templates = [
+            { sender: "Jan Ukázkový", subject: "Podklady k reportu za září", body: "<p>Dobrý den, v příloze posílám podklady k měsíčnímu reportu.</p>" },
+            { sender: "Marta Testová", subject: "Zápis z porady oddělení", body: "<p>Ahoj, v příloze je zápis z dnešní porady včetně úkolů.</p>" },
+            { sender: "Systém SharePoint", subject: "Dokument byl upraven", body: "<p>Dokument byl upraven uživatelem Petr Ukázka. Změny si zobrazte v knihovně.</p>" },
+            { sender: "Ondřej Příklad", subject: "Re: Termín nasazení", body: "<p>Termín nasazení posouvám na úterý. Dej vědět, jestli to vyhovuje.</p>" },
+            { sender: "Lucie Ilustrační", subject: "Pozvánka na školení Excel", body: "<p>Zveme vás na interní školení práce s daty v Excelu.</p>" },
+            { sender: "Notifikace Jira", subject: "Změna stavu u úkolu TASK-30612", body: "<p>Úkol TASK-30612 přešel do stavu Ke kontrole.</p>" }
+        ];
+        const groups = ["Dnes", "Včera", "Minulý týden", "Před dvěma týdny", "Před třemi týdny"];
+        const palette = ["#607d8b", "#0078d4", "#038387", "#498205", "#8764b8", "#ca5010"];
+        const names = [...this.state.folders.map(f => f.name), "Odeslaná pošta"];
+        let seed = 1;
+        const rnd = () => {
+            seed = (Math.imul(seed, 1103515245) + 12345) >>> 0;
+            return seed / 4294967296;
+        };
+        const result = {};
+        names.forEach((name, folderIdx) => {
+            seed = [...name].reduce((a, ch) => (Math.imul(a, 31) + ch.charCodeAt(0)) >>> 0, 7);
+            const count = 3 + Math.floor(rnd() * 8);
+            result[name] = Array.from({ length: count }, (_, i) => {
+                const t = templates[Math.floor(rnd() * templates.length)];
+                const hh = String(8 + Math.floor(rnd() * 10)).padStart(2, "0");
+                const mm = String(Math.floor(rnd() * 60)).padStart(2, "0");
+                const slug = t.sender.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, ".");
+                return {
+                    id: 1001 + folderIdx * 100 + i,
+                    group: groups[Math.floor(rnd() * groups.length)],
+                    sender: t.sender,
+                    initials: t.sender.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase(),
+                    avatarColor: palette[Math.floor(rnd() * palette.length)],
+                    email: `${slug}@firma-priklad.cz`,
+                    subject: t.subject,
+                    time: `${hh}:${mm}`,
+                    unread: rnd() < 0.3,
+                    category: null,
+                    flag: null,
+                    body: t.body
+                };
+            });
+        });
+        return result;
+    },
+
+    // Najde e-mail v doručené poště i ve složkách
+    findMail(id) {
+        const s = this.state;
+        return s.mails.find(m => m.id === id) || Object.values(s.folderMails).flat().find(m => m.id === id);
+    },
+
+    // E-maily aktuálně vybrané složky
+    currentMails() {
+        const s = this.state;
+        if (s.activeFolder === "Doručená pošta") return s.mails;
+        return s.folderMails[s.activeFolder] || [];
+    },
+
+    // Rozbalovací seznam "Všechny aplikace" v okně Nová zpráva
+    renderComposeAppsMenu() {
+        return `
+            <div class="ol-apps-menu" id="ol-apps-menu">
+                <div class="ol-apps-menu-title">Všechny aplikace</div>
+                <button class="ol-apps-item" id="ol-app-my-templates"><span>📄</span><span>My Templates</span></button>
+                <button class="ol-apps-item" disabled><span>📊</span><span>Viva Insights</span></button>
+                <button class="ol-apps-item" disabled><span>📝</span><span>Forms</span></button>
+                <button class="ol-apps-item" disabled><span>🔍</span><span>Zkontrolovat pravopis</span></button>
+            </div>
+        `;
+    },
+
+    // Postranní panel My Templates se šablonami zpráv
+    renderMyTemplatesPanel() {
+        const templates = [
+            { name: "Mám zpoždění", preview: "Dobrý den, omlouvám se, s odpovědí mám zpoždění. Ozvu se do konce dne." },
+            { name: "Oběd?", preview: "Ahoj, nechceš jít na oběd? Dej vědět, kdy se ti hodí." },
+            { name: "Odpovím později", preview: "Děkuji za zprávu. Na podrobnou odpověď se podívám později." }
+        ];
+        return `
+            <aside class="ol-mytpl-panel" id="ol-mytpl-panel">
+                <header class="ol-mytpl-head">
+                    <span>My Templates</span>
+                    <span class="ol-mytpl-close" id="ol-close-my-templates" title="Zavřít">✕</span>
+                </header>
+                <button class="ol-mytpl-new" id="ol-mt-new">+ Šablona</button>
+                <div class="ol-mytpl-list">
+                    ${templates.map(t => `
+                        <div class="ol-mytpl-item">
+                            <div class="ol-mytpl-name">${t.name}</div>
+                            <div class="ol-mytpl-preview">${t.preview}</div>
+                        </div>
+                    `).join("")}
+                </div>
+            </aside>
+        `;
+    },
+
+    // Řádek složky v levém panelu s rozbalovacím šipkou a e-maily pod ním
+    renderFolderRow(f) {
+        const s = this.state;
+        const expanded = !!s.expandedFolders[f.name];
+        const mails = f.name === "Doručená pošta" ? s.mails : (s.folderMails[f.name] || []);
+        return `
+            <div class="ol-fitem ${f.sub ? "sub" : ""} ${s.activeFolder === f.name ? "active" : ""}" data-ol-folder="${f.name}">
+                <span class="ol-fname"><span class="ol-fchev" data-ol-fexp="${f.name}">${expanded ? "∨" : "›"}</span>${f.name}</span>
+                ${f.count ? `<span class="ol-fcount">${f.count}</span>` : ""}
+            </div>
+            ${expanded ? mails.map(m => `
+                <div class="ol-fmail ${m.unread ? "unread" : ""} ${s.selectedMailId === m.id ? "selected" : ""}" data-ol-mail="${m.id}">
+                    <span>${m.sender}</span>
+                    <span class="ol-fmail-sub">${m.subject}</span>
+                </div>
+            `).join("") : ""}
+        `;
+    },
+
+    // Pás karet podle aktivní záložky a sekce
+    renderRibbon() {
+        const s = this.state;
+        if (s.activeRail !== "mail" && s.activeRail !== "calendar") return "";
+        if (s.activeTab === "home") {
+            return s.activeRail === "mail" ? this.renderMailRibbon() : this.renderCalendarRibbon();
+        }
+        const groups = this.ribbonTabs[s.activeTab] || [];
+        return `
+            <div class="ol-ribbon">
+                ${groups.map(g => `
+                    <div class="ol-rgroup">
+                        <div class="ol-rgroup-content">
+                            ${g.buttons.map(b => `
+                                <button class="ol-rbtn-lg" ${b.id ? `id="${b.id}"` : ""}>
+                                    <span class="ol-rbtn-ico">${b.icon}</span>
+                                    <span>${b.label}</span>
+                                </button>
+                            `).join("")}
+                        </div>
+                        <div class="ol-rgroup-title">${g.title}</div>
+                    </div>
+                `).join("")}
+            </div>
+        `;
+    },
+
+    // Hlavní pracovní plocha podle levé lišty (pošta, kalendář, aplikace)
+    renderWorkspaceView() {
+        switch (this.state.activeRail) {
+            case "calendar": return this.renderCalendarView();
+            case "todo": return this.renderTodoView();
+            case "copilot": return this.renderCopilotView();
+            case "onedrive": return this.renderOneDriveView();
+            case "people": return this.renderPeopleView();
+            case "apps": return this.renderAppsView();
+            default: return this.renderMailView();
+        }
+    },
+
+    // Úkoly kurzu = všechny Outlook mise z GAME_DATA (sdílený seznam se zadáním)
+    getCourseMissions() {
+        const data = typeof GAME_DATA !== "undefined" ? GAME_DATA : null;
+        const all = (data && data.missions) || [];
+        return all.filter(m => m.appModule === "outlook");
+    },
+
+    isSolved(missionId) {
+        return typeof this.callbacks?.isMissionSolved === "function" && this.callbacks.isMissionSolved(missionId);
+    },
+
+    // Kontextová nápověda: zadání a postupná nápověda aktuálního (nebo vybraného) úkolu
+    renderHelpPanel() {
+        const s = this.state;
+        const course = this.getCourseMissions();
+        const mission = course.find(m => m.id === s.helpMissionId) || this.mission;
+        if (!mission) return "";
+        return `
+            <aside class="ol-help-panel">
+                <div class="ol-help-header">
+                    <span>Nápověda</span>
+                    <button class="ol-help-close" id="ol-help-close" title="Zavřít">✕</button>
+                </div>
+                <div class="ol-help-body">
+                    <div class="ol-help-label">Úkol</div>
+                    <div class="ol-help-topic">${mission.topic}</div>
+                    <div class="ol-help-label">Zadání</div>
+                    <div class="ol-help-text">${mission.taskDescription}</div>
+                    ${s.helpShowHint
+                        ? `<div class="ol-help-label">Nápověda</div><div class="ol-help-text ol-help-hint">${mission.hint}</div>`
+                        : `<button class="ol-help-hint-btn" id="ol-help-hint-toggle">Zobrazit nápovědu</button>`}
+                    ${course.length > 1 ? `
+                        <div class="ol-help-label" style="margin-top:14px;">Další úkoly kurzu</div>
+                        ${course.filter(m => m.id !== mission.id).map(m => `
+                            <div class="ol-help-link" data-ol-help-mission="${m.id}">${this.isSolved(m.id) ? "✓ " : ""}${m.topic}</div>
+                        `).join("")}
+                    ` : ""}
+                </div>
+            </aside>
+        `;
+    },
+
+    renderTodoView() {
+        const s = this.state;
+        const lists = ["Můj den", "Důležité", "Plánované", "Mám přiřazeno", "E-mail s příznakem", "Úkoly", "Úkoly kurzu"];
+        if (s.todoList === "Úkoly kurzu") {
+            const missions = this.getCourseMissions();
+            const solved = missions.filter(m => this.isSolved(m.id)).length;
+            return `
+                <section class="ol-app-view">
+                    <aside class="ol-app-side">
+                        <div class="ol-app-side-title">Úkoly</div>
+                        ${lists.map(l => `<div class="ol-app-side-item ${s.todoList === l ? "active" : ""}" data-ol-todolist="${l}">${l}</div>`).join("")}
+                    </aside>
+                    <div class="ol-app-main">
+                        <div class="ol-app-title">Úkoly kurzu (${solved}/${missions.length} splněno)</div>
+                        <div style="font-size:12px; color:#605e5c; margin-bottom:10px;">Kliknutím na úkol zobrazíte jeho zadání a nápovědu. Splnění se eviduje jen během této relace.</div>
+                        ${missions.map(m => `
+                            <div class="ol-todo-item ${this.isSolved(m.id) ? "done" : ""}" data-ol-course-task="${m.id}" style="cursor:pointer;">
+                                <span class="ol-todo-check">${this.isSolved(m.id) ? "✓" : ""}</span>
+                                <span>${m.topic}</span>
+                            </div>
+                        `).join("")}
+                    </div>
+                </section>
+            `;
+        }
+        const tasks = s.todos.filter(t => s.todoList === "Úkoly" || t.list === s.todoList);
+        return `
+            <section class="ol-app-view">
+                <aside class="ol-app-side">
+                    <div class="ol-app-side-title">Úkoly</div>
+                    ${lists.map(l => `<div class="ol-app-side-item ${s.todoList === l ? "active" : ""}" data-ol-todolist="${l}">${l}</div>`).join("")}
+                </aside>
+                <div class="ol-app-main">
+                    <div class="ol-app-title">${s.todoList}</div>
+                    <div class="ol-todo-add">
+                        <input type="text" id="ol-todo-input" placeholder="Přidat úkol">
+                        <button id="ol-todo-add-btn">Přidat</button>
+                    </div>
+                    ${tasks.map(t => `
+                        <div class="ol-todo-item ${t.done ? "done" : ""}" data-ol-todo="${t.id}">
+                            <span class="ol-todo-check">${t.done ? "✓" : ""}</span>
+                            <span>${t.title}</span>
+                        </div>
+                    `).join("")}
+                </div>
+            </section>
+        `;
+    },
+
+    renderCopilotView() {
+        const s = this.state;
+        return `
+            <section class="ol-app-view">
+                <aside class="ol-app-side">
+                    <div class="ol-app-side-item" id="ol-cop-new">+ Nová konverzace</div>
+                    <div class="ol-app-side-title">Dnes</div>
+                    <div class="ol-app-side-item active">Plán práce na týden</div>
+                    <div class="ol-app-side-item">Shrnutí e-mailů</div>
+                    <div class="ol-app-side-title">Agenti</div>
+                    <div class="ol-app-side-item">Agent Excel</div>
+                </aside>
+                <div class="ol-app-main ol-cop-main">
+                    ${s.copilotMessages.length === 0 ? `
+                        <div class="ol-cop-hello">
+                            <div class="ol-cop-logo">🌈</div>
+                            <h2>Jak vám mohu pomoci?</h2>
+                        </div>
+                    ` : ""}
+                    <div class="ol-cop-chat">
+                        ${s.copilotMessages.map(m => `<div class="ol-cop-msg ${m.role}">${m.text}</div>`).join("")}
+                    </div>
+                    <div class="ol-cop-input">
+                        <input type="text" id="ol-cop-input" placeholder="Zeptejte se na cokoliv">
+                        <button id="ol-cop-send">➤</button>
+                    </div>
+                </div>
+            </section>
+        `;
+    },
+
+    renderOneDriveView() {
+        const files = [
+            ["📁", "Dokumenty projektu", "—", "Před 2 dny"],
+            ["📁", "Sdílené s vámi", "—", "Včera"],
+            ["📊", "Strategicky_plan_2026.xlsx", "2,4 MB", "út 13.10"],
+            ["📝", "Zápis z porady.docx", "128 kB", "čt 15.10"],
+            ["📄", "Prezentace_Q4.pptx", "5,1 MB", "07.10.2026"],
+            ["📕", "Návod_Outlook.pdf", "890 kB", "02.10.2026"]
+        ];
+        return `
+            <section class="ol-app-view">
+                <aside class="ol-app-side">
+                    <div class="ol-app-side-title">OneDrive</div>
+                    <div class="ol-app-side-item active">Moje soubory</div>
+                    <div class="ol-app-side-item">Sdíleno se mnou</div>
+                    <div class="ol-app-side-item">Nedávné</div>
+                    <div class="ol-app-side-item">Koš</div>
+                </aside>
+                <div class="ol-app-main">
+                    <div class="ol-app-title">Moje soubory</div>
+                    <table class="ol-app-table">
+                        <thead><tr><th>Název</th><th>Velikost</th><th>Změněno</th></tr></thead>
+                        <tbody>
+                            ${files.map(f => `<tr><td>${f[0]} ${f[1]}</td><td>${f[2]}</td><td>${f[3]}</td></tr>`).join("")}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        `;
+    },
+
+    renderPeopleView() {
+        const people = [
+            ["Eva Vzorová", "eva.vzorova@firma-priklad.cz", "BI analytik"],
+            ["Michal Pokusný", "michal.pokusny@firma-priklad.cz", "Projektový manažer"],
+            ["Karel Příklad", "servicedesk@firma-priklad.cz", "ServiceDesk"],
+            ["Radka Ukázková", "jira@firma-priklad.cz", "Vývojářka"],
+            ["Tomáš Modelový", "tomas.modelovy@firma-priklad.cz", "Business analytik"]
+        ];
+        return `
+            <section class="ol-app-view">
+                <aside class="ol-app-side">
+                    <div class="ol-app-side-title">Lidé</div>
+                    <div class="ol-app-side-item active">Kontakty</div>
+                    <div class="ol-app-side-item">Oblíbené</div>
+                </aside>
+                <div class="ol-app-main">
+                    <div class="ol-app-title">Kontakty</div>
+                    <table class="ol-app-table">
+                        <thead><tr><th>Jméno</th><th>E-mail</th><th>Funkce</th></tr></thead>
+                        <tbody>
+                            ${people.map(p => `<tr><td>${p[0]}</td><td>${p[1]}</td><td>${p[2]}</td></tr>`).join("")}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        `;
+    },
+
+    // Spouštěč aplikací (ikona "Další aplikace" v levé liště)
+    renderAppsView() {
+        const apps = [
+            { rail: "mail", icon: "✉️", name: "Pošta" },
+            { rail: "calendar", icon: "📅", name: "Kalendář" },
+            { rail: "people", icon: "👥", name: "Lidé" },
+            { rail: "todo", icon: "✔️", name: "Úkoly" },
+            { rail: "copilot", icon: "🌈", name: "Copilot" },
+            { rail: "onedrive", icon: "☁️", name: "OneDrive" }
+        ];
+        return `
+            <section class="ol-app-view">
+                <div class="ol-app-main">
+                    <div class="ol-app-title">Aplikace</div>
+                    <div class="ol-tile-grid">
+                        ${apps.map(a => `
+                            <div class="ol-tile" data-ol-rail="${a.rail}">
+                                <div class="ol-tile-ico">${a.icon}</div>
+                                <div>${a.name}</div>
+                            </div>
+                        `).join("")}
+                    </div>
+                </div>
+            </section>
+        `;
     },
 
     render() {
@@ -237,11 +655,11 @@ window.SandboxModules.outlook = {
                 <nav class="ol-menubar">
                     <div class="ol-menubar-left">
                         <div class="ol-menu-item file-btn" id="ol-btn-file-main">Soubor</div>
-                        <div class="ol-menu-item active">Domů</div>
-                        <div class="ol-menu-item">Posílání a příjem</div>
-                        <div class="ol-menu-item">Složka</div>
-                        <div class="ol-menu-item">Zobrazení</div>
-                        <div class="ol-menu-item">Nápověda</div>
+                        <div class="ol-menu-item ${s.activeTab === "home" ? "active" : ""}" data-ol-tab="home">Domů</div>
+                        <div class="ol-menu-item ${s.activeTab === "send" ? "active" : ""}" data-ol-tab="send">Posílání a příjem</div>
+                        <div class="ol-menu-item ${s.activeTab === "folder" ? "active" : ""}" data-ol-tab="folder">Složka</div>
+                        <div class="ol-menu-item ${s.activeTab === "view" ? "active" : ""}" data-ol-tab="view">Zobrazení</div>
+                        <div class="ol-menu-item ${s.activeTab === "help" ? "active" : ""}" data-ol-tab="help">Nápověda</div>
                     </div>
                     <div class="ol-menubar-right">
                         <span>Vyzkoušejte nový Outlook <span class="ol-toggle-switch"></span></span>
@@ -250,7 +668,7 @@ window.SandboxModules.outlook = {
                 </nav>
 
                 <!-- 3. PÁS KARET (RIBBON) PODLE SEKCE -->
-                ${s.activeRail === "mail" ? this.renderMailRibbon() : this.renderCalendarRibbon()}
+                ${this.renderRibbon()}
 
                 <!-- 4. HLAVNÍ PRACOVNÍ PLOCHA -->
                 <div class="ol-workspace">
@@ -262,24 +680,32 @@ window.SandboxModules.outlook = {
                         <div class="ol-appbar-btn ${s.activeRail === "calendar" ? "active" : ""}" data-ol-rail="calendar" title="Kalendář">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="1"/><path d="M16 2v4M8 2v4M3 9h18"/></svg>
                         </div>
-                        <div class="ol-appbar-btn" data-ol-rail="people" title="Lidé">
+                        <div class="ol-appbar-btn ${s.activeRail === "people" ? "active" : ""}" data-ol-rail="people" title="Lidé">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="7" r="4"/><path d="M3 20v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
                         </div>
-                        <div class="ol-appbar-btn" data-ol-rail="todo" title="To Do / Úkoly">
+                        <div class="ol-appbar-btn ${s.activeRail === "todo" ? "active" : ""}" data-ol-rail="todo" title="To Do / Úkoly">
                             <svg viewBox="0 0 24 24" fill="none" stroke="#0078d4" stroke-width="2.2"><path d="M20 6L9 17l-5-5"/></svg>
                         </div>
-                        <div class="ol-appbar-btn" title="Další aplikace">
+                        <div class="ol-appbar-btn ${s.activeRail === "copilot" ? "active" : ""}" data-ol-rail="copilot" title="Copilot">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#464eb8" stroke-width="1.8"><path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z"/></svg>
+                        </div>
+                        <div class="ol-appbar-btn ${s.activeRail === "onedrive" ? "active" : ""}" data-ol-rail="onedrive" title="OneDrive">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#0078d4" stroke-width="1.8"><path d="M7 18a4 4 0 010-8 6 6 0 0111.5 1.5A3.5 3.5 0 0118 18z"/></svg>
+                        </div>
+                        <div class="ol-appbar-btn ${s.activeRail === "apps" ? "active" : ""}" data-ol-rail="apps" title="Další aplikace">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><rect x="14" y="14" width="6" height="6"/></svg>
                         </div>
                     </aside>
 
-                    ${s.activeRail === "mail" ? this.renderMailView() : this.renderCalendarView()}
+                    ${this.renderWorkspaceView()}
 
                     <!-- BACKSTAGE MENU "SOUBOR" (Screen 06, 13) -->
                     ${s.backstageOpen ? this.renderBackstage() : ""}
 
                     <!-- OKNO: NOVÁ ZPRÁVA (Screen 11) -->
                     ${s.composeWindowOpen ? this.renderComposeWindow() : ""}
+                    ${s.composeWindowOpen && s.composeAppsOpen ? this.renderComposeAppsMenu() : ""}
+                    ${s.composeWindowOpen && s.myTemplatesOpen ? this.renderMyTemplatesPanel() : ""}
 
                     <!-- OKNO: NOVÁ SCHŮZKA + MÍSTNOSTI + POMOCNÍK PRO PLÁNOVÁNÍ (Screen 03, 04, 05) -->
                     ${s.meetingWindowOpen ? this.renderMeetingWindow() : ""}
@@ -289,6 +715,9 @@ window.SandboxModules.outlook = {
 
                     <!-- MODÁL: MOŽNOSTI APLIKACE OUTLOOK (Screen 06, 07) -->
                     ${s.optionsModalOpen ? this.renderOptionsModal() : ""}
+
+                    <!-- PANEL KONTEXTOVÉ NÁPOVĚDY -->
+                    ${s.helpOpen ? this.renderHelpPanel() : ""}
 
                     <!-- MODÁL: AUTOMATICKÉ ODPOVĚDI (Screen 08) -->
                     ${s.autoReplyModalOpen ? this.renderAutoReplyModal() : ""}
@@ -519,9 +948,9 @@ window.SandboxModules.outlook = {
     renderMailView() {
         const s = this.state;
         const term = s.searchTerm.toLowerCase();
-        const visibleMails = s.mails.filter(m => (s.mailFilter === "all" || m.unread)
+        const visibleMails = this.currentMails().filter(m => (s.mailFilter === "all" || m.unread)
             && (!term || m.sender.toLowerCase().includes(term) || m.subject.toLowerCase().includes(term)));
-        const activeMail = s.mails.find(m => m.id === s.selectedMailId);
+        const activeMail = this.findMail(s.selectedMailId);
         const groups = ["Dnes", "Včera", "Minulý týden", "Před dvěma týdny", "Před třemi týdny"];
 
         return `
@@ -531,13 +960,7 @@ window.SandboxModules.outlook = {
                 ${s.favOpen ? `<div class="ol-fitem" data-ol-folder="Odeslaná pošta"><span>Odeslaná pošta</span></div>` : ""}
 
                 <div class="ol-fsection-head" style="margin-top:10px;" data-ol-fsec="acc"><span>${s.accOpen ? "∨" : "›"}</span> jana.testovaci@firma-priklad...</div>
-                ${s.accOpen ? s.folders.filter(f => !f.sub || !s.foldersCollapsed).map(f => `
-                    <div class="ol-fitem ${f.sub ? "sub" : ""} ${s.activeFolder === f.name ? "active" : ""}" data-ol-folder="${f.name}"
-                         ${f.name === "Doručená pošta" ? `data-ol-ftoggle="1"` : ""}>
-                        <span>${f.name === "Doručená pošta" ? `${s.foldersCollapsed ? "›" : "∨"} Doručená pošta` : f.name}</span>
-                        ${f.count ? `<span class="ol-fcount">${f.count}</span>` : ""}
-                    </div>
-                `).join("") : ""}
+                ${s.accOpen ? s.folders.filter(f => !f.sub || !s.foldersCollapsed).map(f => this.renderFolderRow(f)).join("") : ""}
             </aside>
 
             <!-- 2. Seznam zpráv seskupený podle dnů -->
@@ -967,6 +1390,73 @@ window.SandboxModules.outlook = {
     // ========================================================================
     // OKNO NOVÁ ZPRÁVA (Screen 11)
     // ========================================================================
+    // Pás karet okna nové zprávy – obsah se mění podle zvolené karty (Zpráva, Vložení, Možnosti, Formátování textu, Revize)
+    renderComposeRibbon() {
+        const s = this.state;
+        const tabs = {
+            message: [
+                { title: "Schránka", buttons: [{ label: "Vložit<br>▾", icon: "📋" }, { label: "Vyjmout", icon: "✂️" }, { label: "Kopírovat", icon: "📄" }, { label: "Kopírovat<br>formát", icon: "🖌️" }] },
+                { title: "Základní text", buttons: [{ label: "Písmo<br>▾", icon: "🔤" }, { label: "Odstavec<br>▾", icon: "¶" }, { label: "Styly<br>▾", icon: "🅰️" }] },
+                { title: "Jména", buttons: [{ label: "Adresář", icon: "📖" }, { label: "Kontrola<br>jmen", icon: "👤✓" }] },
+                { title: "Zahrnout", buttons: [{ label: "Připojit<br>soubor ▾", icon: "📎", id: "ol-btn-attach" }, { label: "Odkaz ▾", icon: "🔗" }, { label: "Podpis ▾", icon: "✒️" }] },
+                { title: "Značky", buttons: [{ label: "Zpracovat<br>▾", icon: "🚩" }, { label: "Vysoká<br>důležitost", icon: "❗" }, { label: "Nízká<br>důležitost", icon: "❕" }, { label: "Přiřadit<br>zásadu ▾", icon: "🏷️" }] },
+                { title: "Hlas", buttons: [{ label: "Diktovat", icon: "🎙️", id: "ol-btn-dictate" }] },
+                { title: "Aplikace", buttons: [{ label: "Všechny<br>aplikace ▾", icon: "🧩", id: "ol-btn-all-apps", active: s.composeAppsOpen }] },
+                { title: "Citlivost", buttons: [{ label: "Citlivost ▾", icon: "🛡️" }] },
+                { title: "Editor", buttons: [{ label: "Editor", icon: "📝" }] },
+                { title: "Asistivní nástroje", buttons: [{ label: "Asistivní<br>čtečka", icon: "🔊" }] },
+                { title: "Najít čas", buttons: [{ label: "Nový Plánovač<br>průkazů", icon: "📅" }] }
+            ],
+            insert: [
+                { title: "Zahrnout", buttons: [{ label: "Připojit<br>soubor ▾", icon: "📎", id: "ol-btn-attach" }, { label: "Položka aplikace<br>Outlook", icon: "✉️" }, { label: "Hlasování", icon: "📊" }, { label: "Vizitka ▾", icon: "📇" }, { label: "Kalendář", icon: "📅" }, { label: "Podpis ▾", icon: "✒️" }] },
+                { title: "Tabulky", buttons: [{ label: "Tabulka ▾", icon: "▦" }] },
+                { title: "Ilustrace", buttons: [{ label: "Obrázky ▾", icon: "🖼️" }, { label: "Obrazce ▾", icon: "🔷" }, { label: "Ikony", icon: "🌿" }, { label: "3D modely ▾", icon: "🧊" }, { label: "SmartArt", icon: "📊" }, { label: "Graf", icon: "📈" }, { label: "Snímek<br>obrazovky ▾", icon: "📸" }] },
+                { title: "Odkazy", buttons: [{ label: "Odkaz ▾", icon: "🔗" }, { label: "Záložka", icon: "🔖" }] },
+                { title: "Text", buttons: [{ label: "Textové<br>pole ▾", icon: "🅰️" }, { label: "Rychlé<br>části ▾", icon: "🧩" }, { label: "WordArt ▾", icon: "🅦" }, { label: "Datum a čas", icon: "🗓️" }, { label: "Objekt", icon: "📦" }] },
+                { title: "Symboly", buttons: [{ label: "Rovnice ▾", icon: "π" }, { label: "Symbol ▾", icon: "Ω" }, { label: "Vodorovná<br>čára", icon: "─" }] }
+            ],
+            options: [
+                { title: "Motivy", buttons: [{ label: "Motivy ▾", icon: "🎨" }, { label: "Barvy ▾", icon: "🟦" }, { label: "Písma ▾", icon: "🅰️" }, { label: "Efekty ▾", icon: "🔵" }] },
+                { title: "Zobrazit pole", buttons: [{ label: "Skrytá", icon: "👁️" }, { label: "Od", icon: "👤" }] },
+                { title: "Šifrovat", buttons: [{ label: "Šifrovat ▾", icon: "🔒" }] },
+                { title: "Sledování", buttons: [{ label: "Použít hlasovací<br>tlačítka ▾", icon: "✅" }, { label: "Požadovat oznámení<br>o doručení", icon: "☐" }, { label: "Požadovat oznámení<br>o přečtení", icon: "☐" }] },
+                { title: "Další možnosti", buttons: [{ label: "Uložit odeslanou<br>položku do ▾", icon: "💾" }, { label: "Odložit<br>doručení", icon: "🕒" }, { label: "Odpovědi posílat<br>na adresu", icon: "👤" }] }
+            ],
+            format: [
+                { title: "Formát", buttons: [{ label: "HTML", icon: "Aa" }, { label: "Prostý text", icon: "Aa" }, { label: "Formát RTF", icon: "Aa" }] },
+                { title: "Písmo", buttons: [{ label: "Písmo<br>▾", icon: "🔤" }, { label: "Tučně", icon: "B" }, { label: "Kurzíva", icon: "I" }, { label: "Podtržení", icon: "U" }, { label: "Barva<br>písma ▾", icon: "A" }] },
+                { title: "Odstavec", buttons: [{ label: "Odrážky ▾", icon: "•" }, { label: "Číslování ▾", icon: "1." }, { label: "Zarovnání ▾", icon: "≡" }, { label: "Odsazení ▾", icon: "⇥" }] },
+                { title: "Styly", buttons: [{ label: "Normální", icon: "A" }, { label: "Bez mezer", icon: "A" }, { label: "Nadpis 1", icon: "A" }, { label: "Nadpis 2", icon: "A" }, { label: "Název", icon: "A" }, { label: "Změnit<br>styly ▾", icon: "🅰️" }] },
+                { title: "Úpravy", buttons: [{ label: "Najít ▾", icon: "🔍" }, { label: "Nahradit", icon: "↔️" }, { label: "Vybrat ▾", icon: "↖️" }] },
+                { title: "Lupa", buttons: [{ label: "Lupa", icon: "🔎" }] }
+            ],
+            review: [
+                { title: "Kontrola", buttons: [{ label: "Pravopis<br>a gramatika", icon: "✔️" }, { label: "Výzkumník", icon: "📚" }] },
+                { title: "Jazyk", buttons: [{ label: "Přeložit ▾", icon: "🌐" }] },
+                { title: "Komentáře", buttons: [{ label: "Nový<br>komentář", icon: "💬" }] },
+                { title: "Sledování", buttons: [{ label: "Sledování<br>změn", icon: "📝" }] }
+            ]
+        };
+        const groups = tabs[s.composeTab] || tabs.message;
+        return `
+            <div class="ol-ribbon">
+                ${groups.map(g => `
+                    <div class="ol-rgroup">
+                        <div class="ol-rgroup-content">
+                            ${g.buttons.map(b => `
+                                <button class="ol-rbtn-lg ${b.active ? "active" : ""}" ${b.id ? `id="${b.id}"` : ""}>
+                                    <span class="ol-rbtn-ico">${b.icon}</span>
+                                    <span>${b.label}</span>
+                                </button>
+                            `).join("")}
+                        </div>
+                        <div class="ol-rgroup-title">${g.title}</div>
+                    </div>
+                `).join("")}
+            </div>
+        `;
+    },
+
     renderComposeWindow() {
         const s = this.state;
         return `
@@ -983,65 +1473,15 @@ window.SandboxModules.outlook = {
                     <nav class="ol-menubar">
                         <div class="ol-menubar-left">
                             <div class="ol-menu-item file-btn" id="ol-btn-file-compose">Soubor</div>
-                            <div class="ol-menu-item active">Zpráva</div>
-                            <div class="ol-menu-item">Vložení</div>
-                            <div class="ol-menu-item">Možnosti</div>
-                            <div class="ol-menu-item">Formátování textu</div>
-                            <div class="ol-menu-item">Revize</div>
+                            ${[["message", "Zpráva"], ["insert", "Vložení"], ["options", "Možnosti"], ["format", "Formátování textu"], ["review", "Revize"]].map(([key, label]) => `
+                                <div class="ol-menu-item ${s.composeTab === key ? "active" : ""}" data-ol-ctab="${key}">${label}</div>
+                            `).join("")}
+                            <div class="ol-menu-item">Nápověda</div>
                         </div>
                         <div class="ol-menubar-right"><span class="ol-copilot-pill">🌈 Copilot ▾</span></div>
                     </nav>
 
-                    <div class="ol-ribbon">
-                        <div class="ol-rgroup">
-                            <div class="ol-rgroup-content">
-                                <button class="ol-rbtn-lg"><span style="font-size:20px;">📋</span><span>Vložit<br>▾</span></button>
-                            </div>
-                            <div class="ol-rgroup-title">Schránka ↘</div>
-                        </div>
-                        <div class="ol-rgroup">
-                            <div class="ol-rgroup-content" style="flex-direction:column; justify-content:center; gap:4px;">
-                                <div style="display:flex; gap:4px;">
-                                    <select style="font-size:11px; height:22px; border:1px solid #d2d0ce;"><option>Arial</option><option>Segoe UI</option></select>
-                                    <select style="font-size:11px; height:22px; border:1px solid #d2d0ce;"><option>10</option><option>11</option></select>
-                                </div>
-                                <div style="display:flex; gap:8px; font-weight:600; padding:0 4px;">
-                                    <span>B</span><span><i>I</i></span><span><u>U</u></span><span style="color:#e81123;"><u>A</u></span>
-                                </div>
-                            </div>
-                            <div class="ol-rgroup-title">Základní text ↘</div>
-                        </div>
-                        <div class="ol-rgroup">
-                            <div class="ol-rgroup-content">
-                                <button class="ol-rbtn-lg"><span>📖</span><span>Adresář</span></button>
-                                <button class="ol-rbtn-lg"><span>👤✓</span><span>Kontrola<br>jmen</span></button>
-                            </div>
-                            <div class="ol-rgroup-title">Jména</div>
-                        </div>
-                        <div class="ol-rgroup">
-                            <div class="ol-rgroup-content">
-                                <div class="ol-rstack">
-                                    <button class="ol-rbtn-sm" id="ol-btn-attach">📎 Připojit soubor ▾</button>
-                                    <button class="ol-rbtn-sm">🔗 Odkaz ▾</button>
-                                    <button class="ol-rbtn-sm">✒️ Podpis ▾</button>
-                                </div>
-                            </div>
-                            <div class="ol-rgroup-title">Zahrnout</div>
-                        </div>
-                        <div class="ol-rgroup">
-                            <div class="ol-rgroup-content">
-                                <button class="ol-rbtn-lg"><span>➰</span><span>Součásti<br>Loop ▾</span></button>
-                            </div>
-                            <div class="ol-rgroup-title">Spolupracovat</div>
-                        </div>
-                        <div class="ol-rgroup">
-                            <div class="ol-rgroup-content">
-                                <button class="ol-rbtn-lg" id="ol-btn-dictate"><span style="color:#0078d4; font-size:18px;">🎙️</span><span>Diktovat</span></button>
-                                <button class="ol-rbtn-lg" id="ol-btn-view-templates"><span style="color:#0078d4; font-size:18px;">📄</span><span>View<br>Templates</span></button>
-                            </div>
-                            <div class="ol-rgroup-title">Hlas & My Templates</div>
-                        </div>
-                    </div>
+                    ${this.renderComposeRibbon()}
 
                     <div style="padding:12px 18px; display:flex; gap:14px; border-bottom:1px solid #d2d0ce;">
                         <button class="ol-send-tall" id="ol-send-compose">
@@ -1508,13 +1948,17 @@ window.SandboxModules.outlook = {
             { id: "tasks", label: "Úkoly" },
             { id: "search", label: "Hledání" },
             { id: "lang", label: "Jazyk" },
+            { id: "access", label: "Přístupnost" },
             { id: "adv", label: "Upřesnit" },
-            { id: "ribbon", label: "Přizpůsobit pás karet" }
+            { id: "ribbon", label: "Přizpůsobit pás karet" },
+            { id: "qat", label: "Panel nástrojů Rychlý přístup" },
+            { id: "addins", label: "Doplňky" },
+            { id: "trust", label: "Centrum zabezpečení" }
         ];
 
         return `
             <div class="ol-modal-layer" onclick="event.stopPropagation()">
-                <div class="ol-dialog-frame" style="width:760px; height:520px;">
+                <div class="ol-dialog-frame" style="width:940px; height:680px;">
                     <div class="ol-dialog-top">
                         <span>Možnosti aplikace Outlook</span>
                         <span>? &nbsp;&nbsp; <span style="cursor:pointer;" id="ol-close-options">✕</span></span>
@@ -1548,7 +1992,7 @@ window.SandboxModules.outlook = {
                                 <div style="margin-bottom:6px;">Uživatelské jméno: <input type="text" value="Jana Testovací" style="margin-left:12px; padding:3px 6px; width:190px; border:1px solid #8a8886;"></div>
                                 <div style="margin-bottom:10px;">Iniciály: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" value="SM" style="margin-left:12px; padding:3px 6px; width:60px; border:1px solid #8a8886;"></div>
                                 <div style="margin-bottom:6px;">Motiv Office: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select style="margin-left:12px; padding:3px 6px; width:140px;"><option>Barevný</option><option>Tmavě šedý</option></select></div>
-                            ` : `
+                            ` : s.optionsTab !== "mail" ? this.renderOptionsExtra(s.optionsTab) : `
                                 <!-- Screen 07: Pošta -->
                                 <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
                                     <span style="font-size:22px; color:#323130;">✉️</span>
@@ -1595,8 +2039,157 @@ window.SandboxModules.outlook = {
         `;
     },
 
-    // ========================================================================
-    // MODÁL: AUTOMATICKÉ ODPOVĚDI (Screen 08)
+    renderOptionsExtra(id) {
+        const h = t => `<div style="font-weight:600; color:#323130; border-bottom:1px solid #edebe9; padding-bottom:3px; margin:14px 0 8px;">${t}</div>`;
+        const cb = (t, checked = true) => `<label style="display:block; margin-bottom:5px;"><input type="checkbox" ${checked ? "checked" : ""}> ${t}</label>`;
+        const rb = (t, checked = false, name = "g") => `<label style="display:block; margin-bottom:5px;"><input type="radio" name="${name}" ${checked ? "checked" : ""}> ${t}</label>`;
+        const row = (label, input) => `<div style="margin-bottom:8px;">${label}<span style="margin-left:10px;">${input}</span></div>`;
+        const sel = (opts, w = 160) => `<select style="padding:2px 6px; width:${w}px;">${opts.map(o => `<option>${o}</option>`).join("")}</select>`;
+        const head = (icon, t) => `<div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;"><span style="font-size:20px;">${icon}</span><span style="font-size:13px;">${t}</span></div>`;
+        const btn = (t) => `<button class="ol-pill-btn" style="margin-left:6px;">${t}</button>`;
+
+        switch (id) {
+            case "cal":
+                return `${head("📅", "Možnosti kalendáře")}
+                    ${h("Pracovní doba")}
+                    ${row("Pracovní hodiny:", `<input type="text" value="8:00 – 17:00" style="width:140px; padding:2px 6px;">`)}
+                    ${row("Pracovní dny:", `<span>Po – Pá</span>`)}
+                    ${row("První den v týdnu:", sel(["pondělí", "neděle", "sobota"]))}
+                    ${row("První týden v roce:", sel(["Začíná 1. ledna", "První čtyřdenní týden"]))}
+                    ${h("Možnosti kalendáře")}
+                    ${cb("Automaticky přidávat pozvánky na schůzky online", false)}
+                    ${cb("Zkrátit události a schůzky, které jsou v kalendáři", true)}
+                    ${row("Výchozí délka schůzky:", sel(["30 minut", "15 minut", "60 minut"], 120))}
+                    ${row("Výchozí připomenutí:", sel(["15 minut", "5 minut", "1 hodina"], 120))}
+                    ${cb("Zobrazovat čísla týdnů", false)}
+                    ${h("Ostatní")}
+                    ${cb("Zobrazit návrhy aktivit v kalendáři", true)}`;
+            case "groups":
+                return `${head("👥", "Možnosti skupin")}
+                    ${h("Možnosti uživatelského rozhraní")}
+                    ${cb("Zobrazovat nápis Skupiny v navigačním podokně", true)}
+                    ${cb("Zobrazovat hlavičky skupin v seznamu zpráv", true)}
+                    ${h("Oznámení")}
+                    ${cb("Upozornit mě na nové členy skupiny", false)}
+                    ${h("Možnosti příloh")}
+                    ${rb("Příloha se uloží do skupiny, pokud je to možné", true, "att")}
+                    ${rb("Příloha se vždy odešle e-mailem", false, "att")}`;
+            case "people":
+                return `${head("🧑‍🤝‍🧑", "Možnosti kontaktů a lidí")}
+                    ${h("Zobrazení jmen")}
+                    ${row("Pořadí jmen:", sel(["Křestní jméno, příjmení", "Příjmení, křestní jméno"], 200))}
+                    ${h("Registr kontaktů")}
+                    ${row("Výchozí registr kontaktů:", sel(["Kontakty Outlooku"], 200))}
+                    ${h("Stav online a fotografie")}
+                    ${cb("Zobrazovat fotografie kontaktů", true)}
+                    ${cb("Zobrazovat stav online u kontaktů", true)}`;
+            case "tasks":
+                return `${head("✔️", "Možnosti úkolů")}
+                    ${h("Možnosti Mého dne a úkolů")}
+                    ${row("Výchozí čas připomenutí:", `<input type="text" value="10:00" style="width:80px; padding:2px 6px;">`)}
+                    ${cb("Zobrazit úkoly v zobrazení Můj den", true)}
+                    ${h("Barvy")}
+                    ${row("Barva úkolů po termínu:", `<span style="display:inline-block; width:40px; height:14px; background:#a4262c; vertical-align:middle;"></span>`)}
+                    ${row("Barva dokončených úkolů:", `<span style="display:inline-block; width:40px; height:14px; background:#8a8886; vertical-align:middle;"></span>`)}
+                    ${h("Tlačítko Rychlé kliknutí")}
+                    ${row("Výchozí kategorie:", sel(["Žádná", "Modrá kategorie", "Červená kategorie"], 160))}
+                    ${h("Pracovní čas")}
+                    ${row("Hodin za den:", `<input type="text" value="8" style="width:50px; padding:2px 6px;">`)}
+                    ${row("Hodin za týden:", `<input type="text" value="40" style="width:50px; padding:2px 6px;">`)}`;
+            case "search":
+                return `${head("🔍", "Možnosti hledání")}
+                    ${h("Zdroje")}
+                    ${cb("Hledat v e-mailech", true)}
+                    ${cb("Hledat v kalendáři", true)}
+                    ${cb("Hledat v kontaktech", true)}
+                    ${h("Výsledky")}
+                    ${rb("Hledat ve všech složkách", true, "scope")}
+                    ${rb("Hledat jen v aktuální složce", false, "scope")}
+                    ${h("Zvýraznění")}
+                    ${cb("Zvýraznit výsledky hledání", true)}`;
+            case "lang":
+                return `${head("🌐", "Jazykové možnosti")}
+                    ${h("Jazyk uživatelského rozhraní")}
+                    <div style="display:flex; gap:8px; align-items:flex-start;">
+                        <div style="flex:1; border:1px solid #8a8886; background:#fff; padding:4px;">
+                            <div style="padding:3px 6px; background:#deecf9;">Čeština (výchozí)</div>
+                            <div style="padding:3px 6px;">English (United States)</div>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:4px;"><button class="ol-pill-btn">▲</button><button class="ol-pill-btn">▼</button></div>
+                    </div>
+                    ${h("Jazyky pro vytváření a kontrolu pravopisu")}
+                    <div style="border:1px solid #8a8886; background:#fff; padding:4px; min-height:60px;">
+                        <div style="padding:3px 6px;">Čeština</div>
+                        <div style="padding:3px 6px;">English (United States)</div>
+                    </div>
+                    ${cb("Ukládat jazykové nastavení do cloudu", true)}`;
+            case "access":
+                return `${head("♿", "Možnosti usnadnění přístupu")}
+                    ${h("Kontrola přístupnosti")}
+                    ${cb("Kontrolovat přístupnost při vytváření zprávy", true)}
+                    ${rb("Zobrazit chyby a upozornění", true, "acc")}
+                    ${rb("Zobrazit jen chyby", false, "acc")}
+                    ${h("Zvuk")}
+                    ${cb("Přehrávat zvuk při chybě přístupnosti", false)}
+                    ${h("Zobrazení")}
+                    ${cb("Zvýraznit zaměření klávesnicí", true)}
+                    ${btn("Šablony...")}`;
+            case "adv":
+                return `${head("⚙️", "Upřesnit")}
+                    ${h("Podokno pro čtení")}
+                    ${cb("Označit zprávy jako přečtené při zobrazení v podokně pro čtení", true)}
+                    ${h("Zobrazení aplikace")}
+                    ${cb("Zobrazit aplikace v Outlooku", true)}
+                    ${h("Spuštění")}
+                    ${row("Výchozí složka po spuštění:", sel(["Doručená pošta", "Koncepty"], 160))}
+                    ${h("Automatické archivování")}
+                    ${cb("Automaticky archivovat staré položky", false)}
+                    ${h("Soubory a prohlížeč")}
+                    ${cb("Otevírat odkazy v novém okně prohlížeče", true)}
+                    ${h("Připomenutí")}
+                    ${cb("Přehrát zvuk připomenutí", true)}
+                    ${cb("Zobrazit připomenutí na obrazovce", true)}
+                    ${h("Export")}
+                    ${btn("Exportovat...")}`;
+            case "ribbon":
+                return `${head("🎛️", "Přizpůsobení pásu karet")}
+                    <div style="display:flex; gap:10px;">
+                        <div style="flex:1; border:1px solid #8a8886; background:#fff; padding:6px; min-height:300px; font-size:12px;">
+                            <div style="font-weight:600; margin-bottom:4px;">Karty pásu</div>
+                            ${[["Domů", true], ["Posílání a příjem", true], ["Složka", true], ["Zobrazení", true], ["Doplňky", true], ["Nápověda", true], ["Vývojář", false]].map(([t, c]) => `<label style="display:block; margin:3px 0;"><input type="checkbox" ${c ? "checked" : ""}> ${t}</label>`).join("")}
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:6px; justify-content:center;"><button class="ol-pill-btn">Přidat &gt;&gt;</button><button class="ol-pill-btn">&lt;&lt; Odebrat</button></div>
+                        <div style="flex:1; border:1px solid #8a8886; background:#fff; padding:6px; font-size:12px;">
+                            <div style="font-weight:600; margin-bottom:4px;">Vlastní karty</div>
+                        </div>
+                    </div>
+                    <div style="margin-top:8px; display:flex; gap:6px;"><button class="ol-pill-btn">Nová karta</button><button class="ol-pill-btn">Nová skupina</button><button class="ol-pill-btn">Přejmenovat...</button></div>`;
+            case "qat":
+                return `${head("⚡", "Panel nástrojů Rychlý přístup")}
+                    ${h("Přizpůsobit panel nástrojů")}
+                    ${row("Vyberte příkazy z:", sel(["Běžné příkazy", "Všechny příkazy"], 200))}
+                    ${cb("Uložit", true)}${cb("Zpět", true)}${cb("Opakovat", false)}`;
+            case "addins":
+                return `${head("🧩", "Doplňky")}
+                    ${h("Aktivní doplňky aplikace")}
+                    <div style="border:1px solid #d2d0ce; padding:6px; font-size:12px;">Microsoft Copilot<br>Microsoft To Do<br>Lidé</div>
+                    ${h("Spravovat")}
+                    ${row("Typ doplňku:", sel(["Doplňky COM", "Doplňky Outlooku"], 200))}
+                    ${btn("Přejít...")}`;
+            case "trust":
+                return `${head("🛡️", "Centrum zabezpečení")}
+                    ${h("Zabezpečení")}
+                    ${cb("Blokovat externí obsah v e-mailech", true)}
+                    ${cb("Zobrazovat varování u podezřelých odkazů", true)}
+                    ${h("Ochrana před nevyžádanou poštou")}
+                    ${rb("Standardní", true, "junk")}
+                    ${rb("Vysoká", false, "junk")}
+                    ${btn("Nastavení centra zabezpečení...")}`;
+            default:
+                return "";
+        }
+    },
+
     // ========================================================================
     renderAutoReplyModal() {
         const s = this.state;
@@ -1679,19 +2272,112 @@ window.SandboxModules.outlook = {
 
         c.querySelectorAll("[data-ol-rail]").forEach(btn => {
             btn.addEventListener("click", () => {
-                const r = btn.getAttribute("data-ol-rail");
-                if (r === "mail" || r === "calendar") {
-                    s.activeRail = r;
-                    this.render();
-                }
+                s.activeRail = btn.getAttribute("data-ol-rail");
+                this.render();
+            });
+        });
+
+        c.querySelectorAll("[data-ol-tab]").forEach(t => {
+            t.addEventListener("click", () => {
+                s.activeTab = t.getAttribute("data-ol-tab");
+                if (s.activeRail !== "mail" && s.activeRail !== "calendar") s.activeRail = "mail";
+                this.render();
             });
         });
 
         c.querySelectorAll("[data-ol-folder]").forEach(f => {
             f.addEventListener("click", () => {
-                s.activeFolder = f.getAttribute("data-ol-folder");
+                const name = f.getAttribute("data-ol-folder");
+                s.activeFolder = name;
+                s.activeRail = "mail";
+                s.expandedFolders[name] = true;
                 this.render();
             });
+        });
+
+        c.querySelectorAll("[data-ol-fexp]").forEach(ch => {
+            ch.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const name = ch.getAttribute("data-ol-fexp");
+                s.expandedFolders[name] = !s.expandedFolders[name];
+                this.render();
+            });
+        });
+
+        c.querySelectorAll("[data-ol-course-task]").forEach(t => {
+            t.addEventListener("click", () => {
+                s.helpMissionId = t.getAttribute("data-ol-course-task");
+                s.helpShowHint = false;
+                s.helpOpen = true;
+                this.render();
+            });
+        });
+
+        c.querySelector("#ol-help-open")?.addEventListener("click", () => {
+            s.helpOpen = !s.helpOpen;
+            s.helpMissionId = null;
+            s.helpShowHint = false;
+            this.render();
+        });
+        c.querySelector("#ol-help-close")?.addEventListener("click", () => {
+            s.helpOpen = false;
+            this.render();
+        });
+        c.querySelector("#ol-help-hint-toggle")?.addEventListener("click", () => {
+            s.helpShowHint = true;
+            this.render();
+        });
+        c.querySelectorAll("[data-ol-help-mission]").forEach(h => {
+            h.addEventListener("click", () => {
+                s.helpMissionId = h.getAttribute("data-ol-help-mission");
+                s.helpShowHint = false;
+                this.render();
+            });
+        });
+
+        c.querySelectorAll("[data-ol-todolist]").forEach(l => {
+            l.addEventListener("click", () => {
+                s.todoList = l.getAttribute("data-ol-todolist");
+                this.render();
+            });
+        });
+
+        c.querySelectorAll("[data-ol-todo]").forEach(t => {
+            t.addEventListener("click", () => {
+                const item = s.todos.find(x => String(x.id) === t.getAttribute("data-ol-todo"));
+                if (item) item.done = !item.done;
+                this.render();
+            });
+        });
+
+        const addTodo = () => {
+            const input = c.querySelector("#ol-todo-input");
+            const text = input ? input.value.trim() : "";
+            if (!text) return;
+            s.todos.push({ id: Date.now(), title: text, done: false });
+            this.render();
+        };
+        c.querySelector("#ol-todo-add-btn")?.addEventListener("click", addTodo);
+        c.querySelector("#ol-todo-input")?.addEventListener("keydown", (e) => { if (e.key === "Enter") addTodo(); });
+
+        const sendCopilot = () => {
+            const input = c.querySelector("#ol-cop-input");
+            const text = input ? input.value.trim() : "";
+            if (!text) return;
+            s.copilotMessages.push({ role: "user", text });
+            s.copilotMessages.push({ role: "bot", text: "Děkuji za dotaz. V ukázkovém prostředí Copilot odpovídá jen orientačně." });
+            this.render();
+        };
+        c.querySelector("#ol-cop-send")?.addEventListener("click", sendCopilot);
+        c.querySelector("#ol-cop-input")?.addEventListener("keydown", (e) => { if (e.key === "Enter") sendCopilot(); });
+        c.querySelector("#ol-cop-new")?.addEventListener("click", () => {
+            s.copilotMessages = [];
+            this.render();
+        });
+
+        c.querySelector("#ol-help-options")?.addEventListener("click", () => {
+            s.optionsModalOpen = true;
+            this.render();
         });
 
         c.querySelectorAll("[data-ol-filter]").forEach(p => {
@@ -1743,7 +2429,7 @@ window.SandboxModules.outlook = {
             el.addEventListener("click", (e) => {
                 e.stopPropagation();
                 const raw = el.getAttribute("data-ol-cat");
-                const mail = s.mails.find(m => m.id === s.ctxMenu.mailId);
+                const mail = this.findMail(s.ctxMenu.mailId);
                 if (mail) {
                     if (raw === "clear") mail.category = null;
                     else {
@@ -1762,7 +2448,7 @@ window.SandboxModules.outlook = {
             el.addEventListener("click", (e) => {
                 e.stopPropagation();
                 const mode = el.getAttribute("data-ol-follow");
-                const mail = s.mails.find(m => m.id === s.ctxMenu.mailId) || s.mails[0];
+                const mail = this.findMail(s.ctxMenu.mailId) || s.mails[0];
                 mail.flag = mode === "done" ? "done" : "followup";
                 s.ctxMenu.open = false;
                 if (mode !== "done") {
@@ -1843,7 +2529,7 @@ window.SandboxModules.outlook = {
         c.querySelectorAll("[data-ol-opt]").forEach(tab => {
             tab.addEventListener("click", () => {
                 const id = tab.getAttribute("data-ol-opt");
-                if (id === "general" || id === "mail") {
+                if (id) {
                     s.optionsTab = id;
                     this.render();
                 }
@@ -1979,7 +2665,27 @@ window.SandboxModules.outlook = {
         });
         c.querySelector("#ol-btn-attach")?.addEventListener("click", () => emit("outlook_attach_file"));
         c.querySelector("#ol-btn-dictate")?.addEventListener("click", () => emit("outlook_dictate"));
-        c.querySelector("#ol-btn-view-templates")?.addEventListener("click", () => emit("outlook_view_templates"));
+        c.querySelectorAll("[data-ol-ctab]").forEach(el => el.addEventListener("click", () => {
+            s.composeTab = el.dataset.olCtab;
+            this.render();
+        }));
+        c.querySelector("#ol-btn-all-apps")?.addEventListener("click", () => {
+            s.composeAppsOpen = !s.composeAppsOpen;
+            this.render();
+        });
+        c.querySelector("#ol-app-my-templates")?.addEventListener("click", () => {
+            s.composeAppsOpen = false;
+            s.myTemplatesOpen = true;
+            this.render();
+            this.callbacks.onAction({ action: "outlook_view_templates", completed: true });
+        });
+        c.querySelector("#ol-close-my-templates")?.addEventListener("click", () => {
+            s.myTemplatesOpen = false;
+            this.render();
+        });
+        c.querySelector("#ol-mt-new")?.addEventListener("click", () => {
+            this.callbacks.onInfo("Šablona se vytvoří až po uložení v sandboxu – tato ukázka slouží k procvičení zobrazení.");
+        });
         c.querySelector("#ol-btn-email-templates")?.addEventListener("click", () => emit("outlook_email_templates"));
         c.querySelector("#ol-btn-filter-adv")?.addEventListener("click", () => emit("outlook_advanced_filter"));
         c.querySelector("#ol-btn-bookings")?.addEventListener("click", () => emit("outlook_bookings"));

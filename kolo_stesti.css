@@ -9,8 +9,9 @@
     gap: 16px;
     padding: 18px 16px 24px;
     border-radius: 16px;
-    background: radial-gradient(circle at 50% 35%, #a51d1d 0%, #5c0c0c 60%, #2a0505 100%);
-    box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.4);
+    background: #05060f url("img/kolo-bg.png") center / cover no-repeat;
+    border: 1px solid #2a2750;
+    box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.6);
     position: relative;
     overflow: hidden;
 }
@@ -21,26 +22,12 @@
 
 .kolo-screen .jeopardy-header-info {
     width: 100%;
-    color: #fde68a;
+    color: #e5e7eb;
 }
 
 .kolo-screen .jeopardy-header-info b,
 .kolo-screen .jeopardy-header-info strong {
-    color: #fff;
-}
-
-.kolo-coins {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-}
-
-.kolo-coins span {
-    position: absolute;
-    font-size: 1.8rem;
-    opacity: 0.45;
-    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.4));
+    color: #ffffff;
 }
 
 .kolo-screen > *:not(.kolo-coins) {
@@ -120,16 +107,15 @@
 .kolo-power-track {
     height: 18px;
     border-radius: 9px;
-    background: #3b0a0a;
-    border: 2px solid #d4a017;
+    background: #ffffff;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .kolo-power-fill {
     height: 100%;
     width: 0%;
-    background: linear-gradient(90deg, #fde68a, #f59e0b, #ef4444);
+    background: linear-gradient(90deg, #fca5a5, #e11d48, #c8102e);
 }
 
 .kolo-power-text {
@@ -137,7 +123,7 @@
     margin-top: 6px;
     text-align: center;
     font-weight: 600;
-    color: #fde68a;
+    color: #fca5a5;
 }
 
 .kolo-spin-btn {
@@ -160,7 +146,7 @@
 
 .kolo-hint {
     margin: 0;
-    color: #fcd9b6;
+    color: #e5e7eb;
     font-size: 0.9rem;
 }
 

@@ -56,7 +56,6 @@
                 <span data-level-badge class="difficulty-legend"></span>
             </div>
 			<div class="kolo-banner">Kolo štěstí</div>
-            <div class="kolo-coins"></div>
             <div class="kolo-wheel-box">
                 <div class="kolo-pointer"></div>
                 <div class="kolo-wheel"></div>
@@ -69,16 +68,6 @@
             <p class="kolo-hint">Drž tlačítko – čím déle, tím silnější roztočení.</p>
         `;
         parent.insertBefore(section, anchor);
-
-        const coinsEl = section.querySelector(".kolo-coins");
-        for (let i = 0; i < 14; i++) {
-            const coin = document.createElement("span");
-            coin.textContent = "🪙";
-            coin.style.left = `${Math.random() * 100}%`;
-            coin.style.top = `${Math.random() * 100}%`;
-            coin.style.transform = `rotate(${Math.random() * 360}deg) scale(${0.6 + Math.random() * 0.8})`;
-            coinsEl.appendChild(coin);
-        }
 
         els = {
             wheel: section.querySelector(".kolo-wheel"),
@@ -195,16 +184,12 @@
         els.spinBtn.disabled = true;
         core().setModeratorText("Roztáčím kolo… Uvidíme, kam padne!");
 
-        // Síla určuje počet přeskočených výsečí (slabé stisknutí = jen pár polí) a délku točení
-        const span = 360 / n;
-        const maxSteps = Math.max(1, Math.round(power * n));
-        const steps = 1 + Math.floor(Math.random() * maxSteps);
-        const extraTurns = Math.floor(power * 2);
-        const jitter = (Math.random() - 0.5) * span * 0.6;
+        // 1 dílek síly (10 % na ukazateli) = otočení o 3/4 kola
+        const dilky = Math.max(1, Math.round(power * 10));
+        const degrees = dilky * 270 + Math.random() * 360;
+        const duration = 1.2 + 0.25 * dilky;
 
-        const current = state.rotation;
-        const target = current + extraTurns * 360 + steps * span + jitter;
-        const duration = 1.2 + 2.3 * power;
+        const target = state.rotation + degrees;
         state.rotation = target;
         els.wheel.style.transition = `transform ${duration}s cubic-bezier(0.15, 0.6, 0.1, 1)`;
         els.wheel.style.transform = `rotate(${target}deg)`;

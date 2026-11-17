@@ -701,9 +701,9 @@ const GAME_DATA = {
             difficulty: 1,
             type: "sandbox",
             appModule: "outlook",
-            topic: "View Templates",
-            taskDescription: "Chceš si zobrazit přehled dostupných zobrazení e-mailů a šablon, abys je mohl(a) využít v běžné práci.",
-            hint: "Na kartě 'Zobrazení' v pásu karet klikni na tlačítko 'View Templates'.",
+            topic: "My Templates",
+            taskDescription: "Chceš si otevřít své šablony zpráv, abys je mohl(a) rychle využít v běžné práci.",
+            hint: "Klikni na 'Nový e-mail', potom na 'Všechny aplikace' a vyber 'My Templates'.",
             timeLimitSeconds: 50,
             maxMistakes: 3,
             targetCondition: { action: "outlook_view_templates", completed: true }

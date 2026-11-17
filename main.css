@@ -85,6 +85,8 @@ body {
 .btn-outline:hover { border-color: var(--m365-blue); color: var(--m365-blue); }
 .btn-danger { background: #FEE2E2; color: #991B1B; }
 .btn-danger:hover { background: #FECACA; }
+.btn-warning { background: #FEF3C7; color: #92400E; border: 2px solid var(--color-warning); }
+.btn-warning:hover { background: #FDE68A; }
 .btn-disabled { background: #E2E8F0; color: #94A3B8; cursor: not-allowed; }
 .btn-full { width: 100%; margin-top: auto; }
 
