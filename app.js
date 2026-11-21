@@ -308,7 +308,8 @@ function launchMission(mission, points) {
 // ============================================================================
 function openSandboxMission(mission) {
     setModeratorQuote("beforeSandbox");
-    loadModuleStylesheet(mission.appModule);
+    const startModule = mission.startModule || mission.appModule;
+    loadModuleStylesheet(startModule);
     showScreen("sandbox");
     setModeratorAvatar("norm");
 
@@ -329,7 +330,7 @@ function openSandboxMission(mission) {
     updateSandboxMetricsUI();
 
     startSandboxTimer();
-    mountSandboxModule(mission.appModule, mission);
+    mountSandboxModule(startModule, mission);
 }
 
 function startFreeSandbox(appModuleName, selectedMissionId = null) {
@@ -339,11 +340,12 @@ function startFreeSandbox(appModuleName, selectedMissionId = null) {
     if (!appMissions.length) return;
 
     const activeMission = appMissions.find(m => m.id === selectedMissionId) || appMissions[0];
+    const startModule = activeMission.startModule || appModuleName;
 
     appState.isFreeTraining = true;
     appState.activeGame = null;
     appState.activeMission = activeMission;
-    loadModuleStylesheet(appModuleName);
+    loadModuleStylesheet(startModule);
     showScreen("sandbox");
 
     // Ve volném tréninku se zobrazí postavička moderator_ques a po najetí myší ukáže návod
@@ -379,7 +381,7 @@ function startFreeSandbox(appModuleName, selectedMissionId = null) {
     dom.sandboxTimerBox.classList.add("hidden");
     dom.sandboxLivesBox.classList.add("hidden");
 
-    mountSandboxModule(appModuleName, activeMission);
+    mountSandboxModule(startModule, activeMission);
 }
 
 function mountSandboxModule(appModuleName, mission) {
@@ -387,6 +389,10 @@ function mountSandboxModule(appModuleName, mission) {
     if (moduleObj && typeof moduleObj.init === "function") {
         moduleObj.init(dom.sandboxViewport, mission, {
             onAction: (actionPayload) => verifySandboxAction(actionPayload),
+            onNavigate: (nextModule) => {
+                loadModuleStylesheet(nextModule);
+                mountSandboxModule(nextModule, mission);
+            },
             onMistake: (reasonText) => {
                 if (appState.isFreeTraining) {
                     setModeratorAvatar("no", 5000);

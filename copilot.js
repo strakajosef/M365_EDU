@@ -410,7 +410,7 @@ window.SandboxModules.copilot = {
             s.messages.push({ role: "assistant", text: "Rozumím zadání. Zde je připravené shrnutí / HTML kód." });
             this.render();
             this.callbacks.onAction({ action: "copilot_summarize", completed: true });
-            if (val.length >= 60) {
+            if (val.length >= 10) {
                 this.callbacks.onAction({ action: "copilot_prompt_craft", completed: true });
             }
             if (/html/i.test(val)) {

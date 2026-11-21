@@ -626,6 +626,10 @@
     padding: 2px 6px;
     background: #ffffff;
 }
+.ol-agenda-card[data-ol-calendar-event],
+.ol-cal-block[data-ol-calendar-event] { cursor: pointer; }
+.ol-agenda-card[data-ol-calendar-event]:hover,
+.ol-cal-block[data-ol-calendar-event]:hover { filter: brightness(0.96); }
 .ol-agenda-card.yellow {
     border-left-color: #fce100;
     background-color: #fffef0;

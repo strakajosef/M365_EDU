@@ -75,6 +75,7 @@ window.SandboxModules.outlook = {
             selectedRoom: "",
             selectedTimeSlot: "11:35",
             autoPickMenuOpen: false,
+            selectedCalendarEvent: null,
 
             taskWindowOpen: false,
             taskSubject: "",
@@ -222,6 +223,27 @@ window.SandboxModules.outlook = {
                 }
             ]
         };
+
+        if (mission.id === "m_forms_0") {
+            this.state.mails.unshift({
+                id: 209,
+                group: "Dnes",
+                sender: "Karel Příklad",
+                initials: "KP",
+                avatarColor: "#0078d4",
+                email: "karel.priklad@firma-priklad.cz",
+                subject: "Pozvánka k vyplnění znalostního kvízu v Microsoft Forms",
+                time: "09:15",
+                unread: true,
+                category: null,
+                flag: null,
+                body: `<p>Dobrý den,</p>
+                       <p style="margin:10px 0;">zvu tě k vyplnění krátkého znalostního kvízu. Otevři prosím formulář Microsoft Forms pomocí následujícího odkazu:</p>
+                       <p style="margin:14px 0;"><a href="#" data-ol-forms-quiz-link style="color:#0078d4; text-decoration:underline; font-weight:600;">Otevřít kvíz v Microsoft Forms</a></p>
+                       <p>Děkuji!</p>
+                       <p style="margin-top:14px;">Karel</p>`
+            });
+        }
 
         this.state.folderMails = this.buildFolderMails();
         this.render();
@@ -710,6 +732,9 @@ window.SandboxModules.outlook = {
                     <!-- OKNO: NOVÁ SCHŮZKA + MÍSTNOSTI + POMOCNÍK PRO PLÁNOVÁNÍ (Screen 03, 04, 05) -->
                     ${s.meetingWindowOpen ? this.renderMeetingWindow() : ""}
 
+                    <!-- DETAIL UDÁLOSTI V KALENDÁŘI -->
+                    ${s.selectedCalendarEvent ? this.renderCalendarEventDetails() : ""}
+
                     <!-- OKNO: ÚKOL Z E-MAILU (Screen 16) -->
                     ${s.taskWindowOpen ? this.renderTaskWindow() : ""}
 
@@ -1070,33 +1095,33 @@ window.SandboxModules.outlook = {
                 <div class="ol-agenda-group">Dnes</div>
                 <div class="ol-agenda-row">
                     <div class="ol-agenda-time">Celý den</div>
-                    <div class="ol-agenda-card">🏢 <strong>Práce z domova (VPN)</strong></div>
+                    <div class="ol-agenda-card" data-ol-calendar-event="Práce z domova (VPN)" data-ol-event-time="Celý den" data-ol-event-date="Dnes">🏢 <strong>Práce z domova (VPN)</strong></div>
                 </div>
                 <div class="ol-agenda-row">
                     <div class="ol-agenda-time">11:00</div>
-                    <div class="ol-agenda-card yellow-solid">AkademiaPlus</div>
+                    <div class="ol-agenda-card yellow-solid" data-ol-calendar-event="AkademiaPlus" data-ol-event-time="11:00" data-ol-event-date="Dnes">AkademiaPlus</div>
                 </div>
                 <div class="ol-agenda-row">
                     <div class="ol-agenda-time">13:05</div>
-                    <div class="ol-agenda-card"><strong>porada oddělení</strong><br><span style="color:#605e5c;">Schůzka Microsoft Teams</span></div>
+                    <div class="ol-agenda-card" data-ol-calendar-event="porada oddělení" data-ol-event-time="13:05" data-ol-event-date="Dnes"><strong>porada oddělení</strong><br><span style="color:#605e5c;">Schůzka Microsoft Teams</span></div>
                 </div>
                 <div class="ol-agenda-row">
                     <div class="ol-agenda-time">15:00</div>
-                    <div class="ol-agenda-card"><strong>Nasazení na testovací...</strong><br><span style="color:#605e5c;">Schůzka Microsoft Teams</span></div>
+                    <div class="ol-agenda-card" data-ol-calendar-event="Nasazení na testovací prostředí" data-ol-event-time="15:00" data-ol-event-date="Dnes"><strong>Nasazení na testovací...</strong><br><span style="color:#605e5c;">Schůzka Microsoft Teams</span></div>
                 </div>
 
                 <div class="ol-agenda-group">Zítra</div>
                 <div class="ol-agenda-row">
                     <div class="ol-agenda-time">Celý den</div>
-                    <div class="ol-agenda-card">🏢 <strong>Práce z domova (VPN)</strong></div>
+                    <div class="ol-agenda-card" data-ol-calendar-event="Práce z domova (VPN)" data-ol-event-time="Celý den" data-ol-event-date="Zítra">🏢 <strong>Práce z domova (VPN)</strong></div>
                 </div>
                 <div class="ol-agenda-row">
                     <div class="ol-agenda-time">9:05</div>
-                    <div class="ol-agenda-card"><strong>Analytici CRM - řešitelská...</strong><br><span style="color:#605e5c;">Schůzka Microsoft Teams</span></div>
+                    <div class="ol-agenda-card" data-ol-calendar-event="Analytici CRM - řešitelská schůzka" data-ol-event-time="9:05" data-ol-event-date="Zítra"><strong>Analytici CRM - řešitelská...</strong><br><span style="color:#605e5c;">Schůzka Microsoft Teams</span></div>
                 </div>
                 <div class="ol-agenda-row">
                     <div class="ol-agenda-time">10:05</div>
-                    <div class="ol-agenda-card yellow-solid">Knihovna Online</div>
+                    <div class="ol-agenda-card yellow-solid" data-ol-calendar-event="Knihovna Online" data-ol-event-time="10:05" data-ol-event-date="Zítra">Knihovna Online</div>
                 </div>
             </aside>
         `;
@@ -1164,17 +1189,75 @@ window.SandboxModules.outlook = {
                         ${hours.map(h => `
                             <div style="font-size:10.5px; color:#605e5c; text-align:right; padding:4px 6px; border-bottom:1px solid #edebe9;">${h}</div>${days.map((d, idx) => `
                                 <div class="ol-cal-slot ${idx >= 5 ? "dotted" : ""} ${d.active ? "active-col" : ""}" data-ol-cal-cell="${h}">
-                                    ${idx === 0 && h === "11:00" ? `<div class="ol-cal-block yellow"><strong>AkademiaPlus</strong></div>` : ""}
-                                    ${idx === 0 && h === "13:00" ? `<div class="ol-cal-block rose"><strong>porada oddělení</strong><br>Schůzka Microsoft Teams</div>` : ""}
-                                    ${idx === 1 && h === "9:00" ? `<div class="ol-cal-block rose"><strong>Analytici CRM</strong></div>` : ""}
-                                    ${idx === 1 && h === "10:00" ? `<div class="ol-cal-block yellow"><strong>Knihovna Online</strong> 🔒</div>` : ""}
-                                    ${idx === 2 && h === "10:00" ? `<div class="ol-cal-block rose"><strong>PROJEKT PHOENIX</strong><br>Schůzka Teams; Eva Vzorová</div>` : ""}
-                                    ${idx === 2 && h === "11:00" ? `<div class="ol-cal-block yellow"><strong>Angličtina</strong></div>` : ""}
-                                    ${idx === 2 && h === "13:00" ? `<div class="ol-cal-block green"><strong>REVIZE - kontrola norem</strong></div>` : ""}
-                                    ${idx === 4 && h === "8:00" ? `<div class="ol-cal-block rose"><strong>Workshop</strong></div>` : ""}
+                                    ${idx === 0 && h === "11:00" ? `<div class="ol-cal-block yellow" data-ol-calendar-event="AkademiaPlus" data-ol-event-time="11:00" data-ol-event-date="pondělí 19. října 2026"><strong>AkademiaPlus</strong></div>` : ""}
+                                    ${idx === 0 && h === "13:00" ? `<div class="ol-cal-block rose" data-ol-calendar-event="porada oddělení" data-ol-event-time="13:00" data-ol-event-date="pondělí 19. října 2026"><strong>porada oddělení</strong><br>Schůzka Microsoft Teams</div>` : ""}
+                                    ${idx === 1 && h === "9:00" ? `<div class="ol-cal-block rose" data-ol-calendar-event="Analytici CRM" data-ol-event-time="9:00" data-ol-event-date="úterý 20. října 2026"><strong>Analytici CRM</strong></div>` : ""}
+                                    ${idx === 1 && h === "10:00" ? `<div class="ol-cal-block yellow" data-ol-calendar-event="Knihovna Online" data-ol-event-time="10:00" data-ol-event-date="úterý 20. října 2026"><strong>Knihovna Online</strong> 🔒</div>` : ""}
+                                    ${idx === 2 && h === "10:00" ? `<div class="ol-cal-block rose" data-ol-calendar-event="PROJEKT PHOENIX" data-ol-event-time="10:00" data-ol-event-date="středa 21. října 2026"><strong>PROJEKT PHOENIX</strong><br>Schůzka Teams; Eva Vzorová</div>` : ""}
+                                    ${idx === 2 && h === "11:00" ? `<div class="ol-cal-block yellow" data-ol-calendar-event="Angličtina" data-ol-event-time="11:00" data-ol-event-date="středa 21. října 2026"><strong>Angličtina</strong></div>` : ""}
+                                    ${idx === 2 && h === "13:00" ? `<div class="ol-cal-block green" data-ol-calendar-event="REVIZE - kontrola norem" data-ol-event-time="13:00" data-ol-event-date="středa 21. října 2026"><strong>REVIZE - kontrola norem</strong></div>` : ""}
+                                    ${idx === 4 && h === "8:00" ? `<div class="ol-cal-block rose" data-ol-calendar-event="Workshop" data-ol-event-time="8:00" data-ol-event-date="pátek 23. října 2026"><strong>Workshop</strong></div>` : ""}
                                 </div>
                             `).join("")}
                         `).join("")}
+                    </div>
+                </section>
+            </div>
+        `;
+    },
+
+    renderCalendarEventDetails() {
+        const event = this.state.selectedCalendarEvent;
+        return `
+            <div class="ol-modal-layer" onclick="event.stopPropagation()">
+                <section class="ol-win-frame" role="dialog" aria-modal="true" aria-labelledby="ol-calendar-event-title">
+                    <header class="ol-titlebar">
+                        <div class="ol-titlebar-left">
+                            <span>📅</span>
+                            <span>${event.title} - Schůzka</span>
+                        </div>
+                        <div class="ol-win-controls"><span style="cursor:pointer;" id="ol-close-calendar-event">✕</span></div>
+                    </header>
+                    <nav class="ol-menubar">
+                        <div class="ol-menubar-left">
+                            <div class="ol-menu-item file-btn">Soubor</div>
+                            <div class="ol-menu-item active">Schůzka</div>
+                            <div class="ol-menu-item">Vložení</div>
+                            <div class="ol-menu-item">Nápověda</div>
+                        </div>
+                        <div class="ol-menubar-right"><span class="ol-copilot-pill">🌈 Copilot ▾</span></div>
+                    </nav>
+                    <div class="ol-ribbon">
+                        <div class="ol-rgroup">
+                            <div class="ol-rgroup-content">
+                                <button class="ol-rbtn-lg"><span>📅</span><span>Otevřít<br>kalendář</span></button>
+                            </div>
+                            <div class="ol-rgroup-title">Akce</div>
+                        </div>
+                        <div class="ol-rgroup">
+                            <div class="ol-rgroup-content">
+                                <button class="ol-rbtn-lg"><span>🔔</span><span>Připomenutí</span></button>
+                                <button class="ol-rbtn-lg"><span>🔁</span><span>Opakování</span></button>
+                            </div>
+                            <div class="ol-rgroup-title">Možnosti</div>
+                        </div>
+                    </div>
+                    <div style="flex:1; overflow:auto; padding:24px 32px; color:#201f1e;">
+                        <h1 id="ol-calendar-event-title" style="font-size:22px; font-weight:400; margin-bottom:22px;">${event.title}</h1>
+                        <div style="max-width:760px; border-top:1px solid #edebe9;">
+                            <div class="ol-field-line">
+                                <span style="width:118px; color:#605e5c;">Datum</span>
+                                <span>${event.date}</span>
+                            </div>
+                            <div class="ol-field-line">
+                                <span style="width:118px; color:#605e5c;">Čas</span>
+                                <span>${event.time}</span>
+                            </div>
+                            <div class="ol-field-line">
+                                <span style="width:118px; color:#605e5c;">Kalendář</span>
+                                <span>Jana Testovací</span>
+                            </div>
+                        </div>
                     </div>
                 </section>
             </div>
@@ -2392,6 +2475,12 @@ window.SandboxModules.outlook = {
             this.render();
         });
 
+        c.querySelector("[data-ol-forms-quiz-link]")?.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.callbacks.onNavigate("forms");
+        });
+
         // Levé a pravé tlačítko myši na e-mailech
         c.querySelectorAll("[data-ol-mail]").forEach(row => {
             const id = parseInt(row.getAttribute("data-ol-mail"), 10);
@@ -2599,6 +2688,10 @@ window.SandboxModules.outlook = {
             s.meetingWindowOpen = false;
             this.render();
         });
+        c.querySelector("#ol-close-calendar-event")?.addEventListener("click", () => {
+            s.selectedCalendarEvent = null;
+            this.render();
+        });
         c.querySelectorAll("[data-ol-mtab]").forEach(t => {
             t.addEventListener("click", () => {
                 s.meetingTab = t.getAttribute("data-ol-mtab");
@@ -2690,8 +2783,17 @@ window.SandboxModules.outlook = {
         c.querySelector("#ol-btn-filter-adv")?.addEventListener("click", () => emit("outlook_advanced_filter"));
         c.querySelector("#ol-btn-bookings")?.addEventListener("click", () => emit("outlook_bookings"));
         c.querySelector("#ol-btn-share-cal")?.addEventListener("click", () => emit("outlook_share_calendar"));
-        c.querySelectorAll(".ol-agenda-card").forEach(el => {
-            el.addEventListener("click", () => emit("outlook_calendar_open"));
+        c.querySelectorAll("[data-ol-calendar-event]").forEach(el => {
+            el.addEventListener("click", (e) => {
+                e.stopPropagation();
+                s.selectedCalendarEvent = {
+                    title: el.dataset.olCalendarEvent,
+                    time: el.dataset.olEventTime,
+                    date: el.dataset.olEventDate
+                };
+                this.render();
+                emit("outlook_calendar_open");
+            });
         });
     }
 };

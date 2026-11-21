@@ -926,9 +926,10 @@ const GAME_DATA = {
             difficulty: 0,
             type: "sandbox",
             appModule: "forms",
+            startModule: "outlook",
             topic: "Vyplnění dotazníku, který dostanu",
-            taskDescription: "Kolega ti poslal odkaz na krátký znalostní kvíz v Microsoft Forms. Projdi si jednotlivé otázky v dotazníku, zkontroluj nebo vyber odpovědi a formulář na konci odešli ke zpracování.",
-            hint: "V pohledu respondenta (kvíz 'Víte víc? Otestujte se v kvízu') sroluj pod třetí otázku a klikni na tlačítko 'Odeslat'.",
+            taskDescription: "V Outlooku najdi e-mail s pozvánkou k vyplnění znalostního kvízu. Otevři ho, klikni na odkaz do Microsoft Forms, vyplň všechny otázky a formulář odešli.",
+            hint: "V Outlooku otevři e-mail „Pozvánka k vyplnění znalostního kvízu v Microsoft Forms“ a v jeho textu klikni na odkaz „Otevřít kvíz v Microsoft Forms“. Poté vyber odpověď u všech otázek a klikni na „Odeslat“.",
             timeLimitSeconds: 60,
             maxMistakes: 3,
             targetCondition: { action: "forms_fill_quiz", completed: true }
