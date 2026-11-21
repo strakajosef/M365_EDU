@@ -34,7 +34,7 @@ window.SandboxModules.forms = {
         // Pro respondenta přidáme více testovacích otázek
         if (isRespondent) {
             this.state.questions = [
-                { id: 1, type: "choice", title: "Kdy byla založena společnost Microsoft?", options: ["1975", "1985", "1995"] },
+                { id: 1, type: "choice", title: "Kdy byla založena společnost Generali?", options: ["1942", "1827", "1982"] },
                 { id: 2, type: "choice", title: "Který z těchto nástrojů neslouží primárně ke komunikaci?", options: ["MS Teams", "Skype", "MS Word"] },
                 { id: 3, type: "choice", title: "Co znamená zkratka OneDrive?", options: ["Cloudové úložiště dat", "Herní konzole", "Grafický editor"] }
             ];
